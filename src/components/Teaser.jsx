@@ -96,10 +96,10 @@ export default function Teaser({ animationData }) {
       return (
         <React.Fragment key={idx}>
           <span className="">{question}</span>
-          <span className="relative">
+          <span className="relative inline-block">
             <input
               type="text"
-              placeholder="- - - -"
+              placeholder={idx === 0 ? journey.answer[0] : "- - - -"}
               value={answers[idx]}
               onKeyDown={handleSubmit}
               onChange={(e) => {
@@ -108,24 +108,24 @@ export default function Teaser({ animationData }) {
                 setAnswers(newAnswers);
               }}
               className={
-                "inline h-6 w-40 max-w-fit rounded-full border-b-2 border-sky-400 px-3 " +
+                "inline h-6 w-20 sm:w-24 md:w-32 lg:w-40 max-w-fit rounded-full border-b-2 border-sky-400 px-2 sm:px-3 text-xs sm:text-sm " +
                 (border[idx] !== "" ? border[idx] : " bg-opacity-70")
               }
             />
             {feedback[idx] == "Correct" && (
               <>
-                <span className="absolute right-6 top-0 text-sm">
+                <span className="absolute -right-1 sm:right-6 top-0 text-xs sm:text-sm">
                   {scores[idx]}
                 </span>
-                <FaCircleCheck className="absolute right-1 top-[0.1rem] size-4 text-xl text-cyan-500" />
+                <FaCircleCheck className="absolute right-0 sm:right-1 top-[0.1rem] size-3 sm:size-4 text-cyan-500" />
               </>
             )}
             {border[idx] == "border-b-2 border-rose-400 placeholder:invert" && (
               <>
-                <span className="absolute right-6 top-0 text-sm text-rose-500">
+                <span className="absolute -right-1 sm:right-6 top-0 text-xs sm:text-sm text-rose-500">
                   {scores[idx]}
                 </span>
-                <FaCircleXmark className="absolute right-1 top-[0.1rem] size-4 text-xl text-rose-500" />
+                <FaCircleXmark className="absolute right-0 sm:right-1 top-[0.1rem] size-3 sm:size-4 text-rose-500" />
               </>
             )}
           </span>
@@ -142,23 +142,29 @@ export default function Teaser({ animationData }) {
 
   return (
     <>
-      <div id="teaser" className="mx-auto mt-32 flex max-w-[80dvw] flex-col gap-8 md:max-w-[60dvw]">
-        <h1 className="text-center text-8xl font-bold">Test Your Knowledge</h1>
-        <p className="text-center">
+      <div id="teaser" className="mx-auto mt-16 sm:mt-24 md:mt-32 flex max-w-[95dvw] sm:max-w-[90dvw] md:max-w-[80dvw] lg:max-w-[60dvw] flex-col gap-4 sm:gap-6 md:gap-8 px-4 sm:px-0">
+        <h1 className="text-center text-3xl sm:text-4xl md:text-6xl lg:text-8xl font-bold">
+          Test Your Knowledge
+        </h1>
+        <p className="text-center text-sm sm:text-base md:text-lg">
           {/* Demo the learning game we have. */}
         </p>
       </div>
-      <div className="border-primary mx-auto mt-16 max-w-[80dvw] rounded-lg border p-4 md:max-w-[60dvw]">
+      <div className="border-primary mx-auto mt-8 sm:mt-12 md:mt-16 max-w-[95dvw] sm:max-w-[90dvw] md:max-w-[80dvw] lg:max-w-[60dvw] rounded-lg border p-3 sm:p-4 md:p-6">
         <div className="flex flex-col justify-center gap-1">
-          <h2 className="text-2xl font-bold">Indonesian Independence</h2>
-          <p>Fill the missing blank down below</p>
+          <h2 className="text-lg sm:text-xl md:text-2xl font-bold">
+            Indonesian Independence
+          </h2>
+          <p className="text-sm sm:text-base">Fill the missing blank down below</p>
         </div>
         <div className="border-primary mt-4 rounded-lg border">
-          <p className="p-4 text-justify indent-10 leading-loose tracking-tight">
+          <p className="p-3 sm:p-4 md:p-6 text-justify indent-4 sm:indent-6 md:indent-10 leading-relaxed sm:leading-loose tracking-tight text-sm sm:text-base md:text-lg">
             {questions}
           </p>
           <div className="bg-primary flex w-full">
-            <p className="px-4 py-2 font-bold text-white">Score: 0</p>
+            <p className="px-3 sm:px-4 py-2 font-bold text-white text-sm sm:text-base">
+              Score: {finalScore}
+            </p>
           </div>
         </div>
       </div>

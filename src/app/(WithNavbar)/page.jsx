@@ -9,7 +9,7 @@ import HeroCategory from "@/components/HeroCategory";
 
 export default function Home() {
   return (
-    <>
+    <div className="min-h-screen w-full overflow-x-hidden">
       <HeroBanner />
       <HeroCategory />
       <HeroIntro />
@@ -17,6 +17,6 @@ export default function Home() {
       <TeamIntroduction />
       <TechStack />
       <HeroFooter />
-    </>
+    </div>
   );
 }

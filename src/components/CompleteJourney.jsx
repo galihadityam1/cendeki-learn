@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import JourneyTitle from "./JourneyTitle";
 import Link from "next/link";
 
@@ -9,27 +9,37 @@ export default function CompleteJourney({
   finalScore,
   timer,
 }) {
-  const questions = journey.split("----").map((question, idx) => {
-    if (idx !== journey.split("----").length - 1) {
-      return (
-        <React.Fragment key={idx}>
-          <span className="">{question}</span>
-          <span className="correct-answer relative font-bold italic">
-            {correctAnswers[idx]}
+  const questions = useMemo(() => {
+    if (!journey) return [];
+
+    const parts = journey.split(/___\d+___/);
+
+    return parts.map((part, idx) => {
+      if (idx < correctAnswers.length) {
+        return (
+          <React.Fragment key={idx}>
+            <span className="">{part}</span>
+            <span className="correct-answer relative font-bold italic text-green-600">
+              {correctAnswers[idx]}
+            </span>
+          </React.Fragment>
+        );
+      } else {
+        return (
+          <span className="" key={idx}>
+            {part}
           </span>
-        </React.Fragment>
-      );
-    } else {
-      return <span key={idx}>{question}</span>;
-    }
-  });
+        );
+      }
+    });
+  }, [journey, correctAnswers]);
 
   return (
     <div className="border-primary mx-auto max-w-[80dvw] rounded-lg border p-4 md:max-w-[60dvw]">
       <div className="flex items-center justify-between">
         <div className="flex flex-col justify-center gap-1">
           <JourneyTitle title={title} />
-          <p>Fill the missing blank down below</p>
+          <p>Here are the correct answers:</p>
         </div>
         <Link
           href="/leaderboard"

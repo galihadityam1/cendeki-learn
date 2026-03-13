@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo, useCallback } from "react";
 import { CorrectFeedback, IncorrectFeedback } from "./Feedback";
 import JourneyTitle from "./JourneyTitle";
 
@@ -14,48 +14,63 @@ export default function IncompleteJourney({
   onClickStart,
   feedback,
   handleSubmit,
-  gameStart
+  gameStart,
 }) {
-  console.log(journey, answers, gameStart ,"INCOMPLETE JOURNEY");
-  const questions = journey?.split("----").map((question, idx) => {
-    if (idx !== journey?.split("----").length - 1) {
-      return (
-        <React.Fragment key={idx}>
-          <span className="">{question}</span>
-          <span className="relative font-bold italic">
-            <input
-              type="text"
-              disabled={!gameStart ? true : false}
-              placeholder="- - - -"
-              value={answers[idx]}
-              onKeyDown={handleSubmit}
-              onChange={(e) => {
-                const newAnswers = [...answers];
-                newAnswers[idx] = e.target.value;
-                setAnswers(newAnswers);
-              }}
-              className={
-                "inline h-6 w-40 max-w-fit rounded-full border-b-2 border-sky-400 px-3 " +
-                (border[idx] !== "" ? border[idx] : " bg-opacity-70")
-              }
-            />
-            {feedback[idx] == "Correct" && (
-              <CorrectFeedback scores={scores[idx]} />
-            )}
-            {feedback[idx] == "Incorrect" && (
-              <IncorrectFeedback scores={scores[idx]} />
-            )}
+  const questions = useMemo(() => {
+    if (!journey) return [];
+
+    const parts = journey.split(/___\d+___/);
+    const blanks = journey.match(/___\d+___/g) || [];
+
+    return parts.map((part, idx) => {
+      if (idx < blanks.length) {
+        return (
+          <React.Fragment key={idx}>
+            <span className="">{part}</span>
+            <span className="relative font-bold italic">
+              <input
+                type="text"
+                disabled={!gameStart}
+                placeholder="- - - -"
+                value={answers[idx] || ""}
+                onKeyDown={handleSubmit}
+                onChange={(e) => {
+                  const newAnswers = [...answers];
+                  newAnswers[idx] = e.target.value;
+                  setAnswers(newAnswers);
+                }}
+                className={
+                  "inline h-6 w-40 max-w-fit rounded-full border-b-2 border-sky-400 px-3 " +
+                  (border[idx] !== "" ? border[idx] : " bg-opacity-70")
+                }
+              />
+              {feedback[idx] === "Correct" && (
+                <CorrectFeedback scores={scores[idx]} />
+              )}
+              {feedback[idx] === "Incorrect" && (
+                <IncorrectFeedback scores={scores[idx]} />
+              )}
+            </span>
+          </React.Fragment>
+        );
+      } else {
+        return (
+          <span className="" key={idx}>
+            {part}
           </span>
-        </React.Fragment>
-      );
-    } else {
-      return (
-        <span className="" key={idx}>
-          {question}
-        </span>
-      );
-    }
-  });
+        );
+      }
+    });
+  }, [
+    journey,
+    answers,
+    border,
+    scores,
+    feedback,
+    gameStart,
+    handleSubmit,
+    setAnswers,
+  ]);
 
   return (
     <div className="border-primary mx-auto max-w-[80dvw] rounded-lg border p-4 md:max-w-[60dvw]">

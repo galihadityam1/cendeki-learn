@@ -89,6 +89,7 @@ const categories = [
   },
   {
     name: "Language",
+    soon: "Coming Soon"
   },
   {
     name: "Science",

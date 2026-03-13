@@ -7,12 +7,12 @@ export async function POST(req, res) {
   try {
     const { searchParams } = new URL(req.url);
     const query = searchParams.get("query");
-    const prompt = `ceritakan sejarah tentang ${query} sesuai dengan cerita aslinya dengan bentuk json dengan properti sebagai berikut , 
-    {
-     "fullStory": cerita dengan panjang 5 kalimat,
-     "story": fullStory yang dihilangkan 2 kata pada tiap kalimat dari fullStory kata tersebut dan tidak berdekatan kemudian kata yang hilang diganti dengan  '----', ingat
-     "answer": [kata yang dihilangkan dari story, jumlah jawaban harus sama dengan kata yang dihilangkan, urutkan berdasarkan yang dihilangkan lebih dahulu]
-     }`;
+    const prompt = `Tell the history of ${query} based on the original story, in the following JSON format:
+  {
+  "fullStory": the story in 5 sentences,
+  "story": the full story with 2 words missing from each sentence (these words should not be adjacent), and replaced with '----'.
+  "answer": an array of the words that were removed from the story, in the order they were removed. The number of words removed must match the number of '----' placeholders, and they should be ordered in the same sequence as they were removed from the story.
+  }`;
 
     if (req.method !== "POST")
       return res.send({
@@ -22,11 +22,12 @@ export async function POST(req, res) {
 
     const options = {
       method: "POST",
-      url: "https://chatgpt-best-price.p.rapidapi.com/v1/chat/completions",
+      url: "https://enterprise-edition-chat-gpt-3-5-turbo.p.rapidapi.com/",
       headers: {
-        "content-type": "application/json",
-        "X-RapidAPI-Key": RAPID_API,
-        "X-RapidAPI-Host": "chatgpt-best-price.p.rapidapi.com",
+        "x-rapidapi-key": RAPID_API,
+        "x-rapidapi-host":
+          "enterprise-edition-chat-gpt-3-5-turbo.p.rapidapi.com",
+        "Content-Type": "application/json",
       },
       data: {
         model: "gpt-3.5-turbo",
@@ -38,19 +39,16 @@ export async function POST(req, res) {
         ],
       },
     };
-    // console.log(RAPID_API);
 
     const { data } = await axios.request(options);
     console.log(data.choices[0].message.content, "API");
     const object = JSON.parse(data.choices[0].message.content);
-    // console.log(object);
-    object.title = query
-    object.category = 'history'
-    let res =  await StoryModel.addStory(object)
-    const { insertedId } = res
-    let result = await StoryModel.getStoryById(insertedId)
-    // console.log(result);
-    
+    object.title = query;
+    object.category = "history";
+    let res = await StoryModel.addStory(object);
+    const { insertedId } = res;
+    let result = await StoryModel.getStoryById(insertedId);
+
     return NextResponse.json({
       status: 200,
       answer: result,

@@ -4,13 +4,6 @@ import { z } from "zod";
 import { hashPassword, verifyPassword } from "../helpers/bcrypt";
 import { ObjectId } from "mongodb";
 
-// type NewUserInput = Omit<UserType, "_id">
-
-// type InputLogin = {
-//   email: string
-//   password: string
-// }
-
 const AddUserSchema = z.object({
   fullname: z.string(),
   email: z.string().email(),

@@ -25,7 +25,7 @@ export default function Page({ params }) {
   const [answers, setAnswers] = useState([]);
   const [storyId, setStoryId] = useState("");
   const [correctAnswers, setCorrectAnswers] = useState([]);
-  const [gameStart, setGameStart] = useState(false)
+  const [gameStart, setGameStart] = useState(false);
   const [journeyList, setJourneyList] = useState([]);
   const [feedback, setFeedback] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -41,7 +41,7 @@ export default function Page({ params }) {
 
   const onClickStart = () => {
     clearTimer(getTimeUp(), setTimer, setGameEnd, Ref);
-    setGameStart(true)
+    setGameStart(true);
   };
 
   const router = useRouter();
@@ -132,59 +132,79 @@ export default function Page({ params }) {
   }
 
   return (
-    <div className="mx-auto">
-      <div className="mx-auto mb-8 mt-8 flex max-w-[80dvw] flex-col gap-8 md:max-w-[60dvw]">
-        <h1 className="text-center text-4xl font-bold md:text-7xl 2xl:text-8xl">
+    <div className="mx-auto min-h-screen w-full overflow-x-hidden">
+      {/* Header Section */}
+      <div className="mx-auto mb-4 mt-4 flex max-w-[95%] flex-col gap-4 px-4 sm:mb-6 sm:mt-6 sm:max-w-[90%] sm:gap-6 sm:px-0 md:mb-8 md:mt-8 md:max-w-[80%] md:gap-8 lg:max-w-[60%]">
+        <h1 className="text-center text-2xl font-bold leading-tight sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl 2xl:text-8xl">
           Test Your Knowledge
         </h1>
-      <h2 className="text-2xl font-bold mx-auto">Subject: {category}</h2>
-      </div>
-      <div className="mb-10 grid w-full grid-cols-3 items-center justify-center gap-4 px-8 2xl:grid-cols-4">
-        {journeyList.length != 0 &&
-          journeyList.map((el, idx) => {
-            return (
-              <JourneyCard
-                key={idx}
-                el={el}
-                setJourneyList={setJourneyList}
-                setGenerating={setGenerating}
-                setLoading={setLoading}
-                setStoryId={setStoryId}
-                setJourney={setJourney}
-                setCorrectAnswers={setCorrectAnswers}
-                setAnswers={setAnswers}
-                setScores={setScores}
-                setTitle={setTitle}
-              />
-            );
-          })}
+        <h2 className="mx-auto text-center text-lg font-bold sm:text-xl md:text-2xl lg:text-3xl">
+          Subject: {category}
+        </h2>
       </div>
 
-      {generating && <LoadingSkeleton />}
-      {!loading && !displayComplete && (
-        <IncompleteJourney
-          feedback={feedback}
-          title={title}
-          journey={journey}
-          answers={answers}
-          border={border}
-          scores={scores}
-          timer={timer}
-          finalScore={finalScore}
-          setAnswers={setAnswers}
-          onClickStart={onClickStart}
-          handleSubmit={handleSubmit}
-          gameStart={gameStart}
-          />
+      {/* Journey Cards Grid */}
+      <div className="mb-6 w-full px-3 sm:mb-8 sm:px-4 md:mb-10 md:px-6 lg:px-8">
+        <div className="mx-auto grid max-w-7xl grid-cols-1 place-items-center gap-3 sm:grid-cols-2 sm:gap-4 md:gap-6 lg:grid-cols-3 2xl:grid-cols-4">
+          {journeyList.length != 0 &&
+            journeyList.map((el, idx) => {
+              return (
+                <JourneyCard
+                  key={idx}
+                  el={el}
+                  setJourneyList={setJourneyList}
+                  setGenerating={setGenerating}
+                  setLoading={setLoading}
+                  setStoryId={setStoryId}
+                  setJourney={setJourney}
+                  setCorrectAnswers={setCorrectAnswers}
+                  setAnswers={setAnswers}
+                  setScores={setScores}
+                  setTitle={setTitle}
+                />
+              );
+            })}
+        </div>
+      </div>
+
+      {/* Loading State */}
+      {generating && (
+        <div className="px-4 sm:px-6 md:px-8">
+          <LoadingSkeleton />
+        </div>
       )}
+
+      {/* Game Content */}
+      {!loading && !displayComplete && (
+        <div className="px-4 sm:px-6 md:px-8">
+          <IncompleteJourney
+            feedback={feedback}
+            title={title}
+            journey={journey}
+            answers={answers}
+            border={border}
+            scores={scores}
+            timer={timer}
+            finalScore={finalScore}
+            setAnswers={setAnswers}
+            onClickStart={onClickStart}
+            handleSubmit={handleSubmit}
+            gameStart={gameStart}
+          />
+        </div>
+      )}
+
+      {/* Complete Journey */}
       {displayComplete && (
-        <CompleteJourney
-          journey={journey}
-          correctAnswers={correctAnswers}
-          title={title}
-          finalScore={finalScore}
-          timer={timer}
-        />
+        <div className="px-4 sm:px-6 md:px-8">
+          <CompleteJourney
+            journey={journey}
+            correctAnswers={correctAnswers}
+            title={title}
+            finalScore={finalScore}
+            timer={timer}
+          />
+        </div>
       )}
     </div>
   );

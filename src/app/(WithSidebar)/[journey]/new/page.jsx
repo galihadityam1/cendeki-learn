@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
 import { BASE_URL } from "@/db/config/constant";
@@ -7,12 +7,8 @@ import PromptAPI from "@/components/PromptAPI";
 import CompleteJourney from "@/components/CompleteJourney";
 import IncompleteJourney from "@/components/IncompleteJourney";
 import LoadingSkeleton from "@/components/LoadingSkeleton";
-import {
-  capitalize,
-  clearTimer,
-  getTimeUp,
-  postScore,
-} from "../actions";
+import { capitalize, clearTimer, getTimeUp, postScore } from "../actions";
+import { OPENROUTER_API_KEY } from "@/db/config/constant";
 
 export default function Page({ params }) {
   const Ref = useRef(null);
@@ -29,7 +25,7 @@ export default function Page({ params }) {
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
   const [displayComplete, setDisplayComplete] = useState(false);
-  const [gameStart, setGameStart] = useState(false)
+  const [gameStart, setGameStart] = useState(false);
   const [border, setBorder] = useState([]);
   const [scores, setScores] = useState([]);
   const [category, setCategory] = useState("");
@@ -45,12 +41,21 @@ export default function Page({ params }) {
       setLoading(true);
       setQuestion("");
       setJourney("");
+      setDisplayComplete(false);
+      setGameStart(false);
+      setGameEnd(false);
+      setFeedback([]);
+      setBorder([]);
+      setScores([]);
+      setAnswers([]);
+      setFinalScore(0);
+      setTimer("00:30");
 
       let res;
       switch (params.journey) {
         case "history":
           res = await fetch(
-            `${BASE_URL}/api/chatgpt-history?query=${question}`,
+            `${BASE_URL}/api/openrouter-story?query=${question}&category=history`,
             {
               method: "POST",
               cache: "no-store",
@@ -58,9 +63,9 @@ export default function Page({ params }) {
           );
           break;
 
-        case "language":
+        case "english":
           res = await fetch(
-            `${BASE_URL}/api/chatgpt-language?query=${question}`,
+            `${BASE_URL}/api/openrouter-story?query=${question}&category=english`,
             {
               method: "POST",
               cache: "no-store",
@@ -69,16 +74,23 @@ export default function Page({ params }) {
           break;
         default:
           setLoading(false);
-          break;
+          setGenerating(false);
+          return;
       }
+
       if (!res.ok) {
-        alert();
+        const errorData = await res.text();
+        console.error("API Error Response:", errorData);
+        console.error("Status:", res.status);
+        alert("Failed to generate content. Please try again.");
         setLoading(false);
+        setGenerating(false);
         return;
       }
+
       const { answer: result } = await res.json();
 
-      console.log(result, "RESULT PROMPT");
+      console.log(result, "RESULT PROMPT"); // !DO NOT CLEAR THIS CONSOLE.LOG
       setJourney(result.story);
       setStoryId(result._id);
       setCorrectAnswers(result.answer);
@@ -92,7 +104,7 @@ export default function Page({ params }) {
 
   const onClickStart = () => {
     clearTimer(getTimeUp(), setTimer, setGameEnd, Ref);
-    setGameStart(true)
+    setGameStart(true);
   };
 
   const router = useRouter();
@@ -124,61 +136,51 @@ export default function Page({ params }) {
   useEffect(() => {
     capitalize(params.journey, setCategory);
     return () => {
-      if (Ref.current) {
-        clearInterval(Ref.current);
-      }
+      clearInterval(Ref.current);
     };
   }, []);
 
-  function handleSubmit(e) {
-    if (e.key == "Enter") {
-      const newFeedback = answers.map((answer, idx) => {
-        if (scores[idx] > 0) {
-          return;
-        }
-        const res =
-          answer?.toLowerCase() === correctAnswers[idx]?.toLowerCase()
-            ? "Correct"
-            : "Incorrect";
+  const handleSubmit = useCallback(
+    (e) => {
+      if (e.key === "Enter") {
+        const updatedFeedback = [...feedback];
+        const updatedBorder = [...border];
+        const updatedScores = [...scores];
 
-        setFeedback((prev) => {
-          const updatedFeedback = [...prev];
+        answers.forEach((answer, idx) => {
+          if (scores[idx] > 0) return;
+
+          const res =
+            answer?.toLowerCase().trim() ===
+            correctAnswers[idx]?.toLowerCase().trim()
+              ? "Correct"
+              : "Incorrect";
+
           updatedFeedback[idx] = res;
-          return updatedFeedback;
-        });
 
-        let borderClass = "";
-        if (res === "Correct") {
-          borderClass = "correct-answer";
-        } else if (res === "Incorrect" && answer && answer.length !== 0) {
-          borderClass = "border-b-2 border-rose-400";
-        } else {
-          borderClass = "";
-        }
-        setBorder((prev) => {
-          const updatedBorder = [...prev];
+          let borderClass = "";
+          if (res === "Correct") {
+            borderClass = "correct-answer";
+          } else if (res === "Incorrect" && answer && answer.length !== 0) {
+            borderClass = "border-b-2 border-rose-400";
+          }
           updatedBorder[idx] = borderClass;
-          return updatedBorder;
+
+          let score = 0;
+          if (res === "Correct") {
+            score += parseInt(timer.split(":")[1]) * 10;
+          }
+          updatedScores[idx] = score;
         });
 
-        let score = 0;
-        if (res === "Correct") {
-          score += timer.split(":")[1] * 10;
-        } else if (res === "Incorrect" && answer && answer.length !== 0) {
-          score = 0;
-        } else {
-          score = 0;
-        }
-        setScores((prev) => {
-          const updateScore = [...prev];
-          updateScore[idx] = score;
-          return updateScore;
-        });
-
-        return res;
-      });
-    }
-  }
+        // Batch all state updates at once
+        setFeedback(updatedFeedback);
+        setBorder(updatedBorder);
+        setScores(updatedScores);
+      }
+    },
+    [answers, correctAnswers, feedback, border, scores, timer],
+  );
 
   return (
     <>

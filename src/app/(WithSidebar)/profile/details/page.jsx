@@ -15,43 +15,77 @@ const Page = () => {
   }, [editProfile]);
 
   return (
-    <div className="flex w-full flex-col items-center gap-4 py-16">
-      <p className="text-primary text-4xl font-bold">My Profile</p>
-      <div
-        className="mb-8 flex min-h-[20dvh] w-full max-w-[80%] items-center gap-16 overflow-clip rounded-lg px-8"
-        style={{
-          backgroundImage: 'url("/autumn.png")',
-          maxHeight: "40dvw",
-          maxWidth: "80%",
-          backgroundSize: "cover",
-          position: "center",
-          backgroundRepeat: "no-repeat",
-        }}
-      >
-        <img
-          src="https://images.pexels.com/photos/279360/pexels-photo-279360.jpeg"
-          className="size-32 rounded-full object-cover"
-          alt=""
-        />
-        <div className="flex max-h-[90%] min-h-[20%] w-[80%] max-w-[80%] rounded-lg bg-white p-6">
-          <div className="flex w-[35%] flex-col gap-2">
-            <div className="">
-              <p className="text-xs font-semibold text-gray-500">Full Name</p>
-              <p className="text-lg font-semibold">{state.fullname}</p>
-            </div>
-            <div className="">
-              <p className="text-xs font-semibold text-gray-500">Email</p>
-              <p className="text-lg font-semibold">{state.email}</p>
-            </div>
+    <div className="flex w-full flex-col items-center gap-6 py-8 px-4 sm:py-12 sm:px-6 lg:py-16 lg:px-8">
+      {/* Page Title */}
+      <h1 className="text-primary text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-4">
+        My Profile
+      </h1>
+      
+      {/* Profile Card */}
+      <div className="w-full max-w-7xl">
+        <div
+          className="relative flex flex-col lg:flex-row items-center lg:items-start gap-6 lg:gap-8 overflow-hidden rounded-xl p-6 sm:p-8 lg:p-12 shadow-lg"
+          style={{
+            backgroundImage: 'url("/autumn.png")',
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
+          }}
+        >
+          {/* Background Overlay for better readability */}
+          <div className="absolute inset-0 bg-black bg-opacity-20"></div>
+          
+          {/* Profile Image */}
+          <div className="relative z-10 flex-shrink-0">
+            <img
+              src="https://images.pexels.com/photos/279360/pexels-photo-279360.jpeg"
+              className="w-24 h-24 sm:w-32 sm:h-32 lg:w-40 lg:h-40 rounded-full object-cover border-4 border-white shadow-lg"
+              alt="Profile"
+            />
           </div>
-          <div>
-            <p className="text-xs font-semibold text-gray-500">Bio</p>
-            <p className="text-lg font-semibold">{state.bio}</p>
+
+          {/* Profile Information */}
+          <div className="relative z-10 flex-1 w-full lg:max-w-none">
+            <div className="bg-white bg-opacity-95 backdrop-blur-sm rounded-xl p-4 sm:p-6 lg:p-8 shadow-lg">
+              {/* Name and Email Row */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-6">
+                <div className="space-y-1">
+                  <p className="text-xs sm:text-sm font-semibold text-gray-500 uppercase tracking-wide">
+                    Full Name
+                  </p>
+                  <p className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-800 break-words">
+                    {state.fullname || "Not provided"}
+                  </p>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-xs sm:text-sm font-semibold text-gray-500 uppercase tracking-wide">
+                    Email
+                  </p>
+                  <p className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-800 break-all">
+                    {state.email || "Not provided"}
+                  </p>
+                </div>
+              </div>
+
+              {/* Bio Section */}
+              <div className="space-y-2">
+                <p className="text-xs sm:text-sm font-semibold text-gray-500 uppercase tracking-wide">
+                  Bio
+                </p>
+                <p className="text-base sm:text-lg lg:text-xl font-medium text-gray-700 leading-relaxed">
+                  {state.bio || "No bio available"}
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-      <ProfileSummary />
-      <EditProfile getProfile={getProfile} />
+
+      {/* Profile Components */}
+      <div className="w-full max-w-7xl space-y-6 lg:space-y-8">
+        <ProfileSummary />
+        <EditProfile getProfile={getProfile} />
+      </div>
     </div>
   );
 };
