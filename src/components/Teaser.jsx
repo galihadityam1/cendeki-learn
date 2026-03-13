@@ -47,7 +47,8 @@ export default function Teaser({ animationData }) {
     if (e.key == "Enter") {
       const newFeedback = answers.map((answer, idx) => {
         const res =
-          answer?.toLowerCase() === journey.answer[idx]?.toLowerCase()
+          answer?.toLowerCase().trim() ===
+          journey.answer[idx]?.toLowerCase().trim()
             ? "Correct"
             : "Incorrect";
 
@@ -108,25 +109,25 @@ export default function Teaser({ animationData }) {
                 setAnswers(newAnswers);
               }}
               className={
-                "inline h-6 w-20 sm:w-24 md:w-32 lg:w-40 max-w-fit rounded-full border-b-2 border-sky-400 px-2 sm:px-3 text-xs sm:text-sm " +
+                "inline h-6 w-20 max-w-fit rounded-full border-b-2 border-sky-400 px-2 text-xs sm:w-24 sm:px-3 sm:text-sm md:w-32 lg:w-40 " +
                 (border[idx] !== "" ? border[idx] : " bg-opacity-70")
               }
             />
             {feedback[idx] == "Correct" && (
-              <>
-                <span className="absolute -right-1 sm:right-6 top-0 text-xs sm:text-sm">
-                  {scores[idx]}
+              <div className="absolute -right-1 top-1 flex items-center gap-1 sm:right-3">
+                <span className="text-xs font-bold text-cyan-500 sm:text-sm">
+                  +{scores[idx]}
                 </span>
-                <FaCircleCheck className="absolute right-0 sm:right-1 top-[0.1rem] size-3 sm:size-4 text-cyan-500" />
-              </>
+                <FaCircleCheck className="size-3 text-cyan-500 sm:size-4" />
+              </div>
             )}
             {border[idx] == "border-b-2 border-rose-400 placeholder:invert" && (
-              <>
-                <span className="absolute -right-1 sm:right-6 top-0 text-xs sm:text-sm text-rose-500">
+              <div className="absolute -right-1 top-1 flex items-center gap-1 sm:right-3">
+                <span className="text-xs font-bold text-rose-500 sm:text-sm">
                   {scores[idx]}
                 </span>
-                <FaCircleXmark className="absolute right-0 sm:right-1 top-[0.1rem] size-3 sm:size-4 text-rose-500" />
-              </>
+                <FaCircleXmark className="size-3 text-rose-500 sm:size-4" />
+              </div>
             )}
           </span>
         </React.Fragment>
@@ -142,27 +143,32 @@ export default function Teaser({ animationData }) {
 
   return (
     <>
-      <div id="teaser" className="mx-auto mt-16 sm:mt-24 md:mt-32 flex max-w-[95dvw] sm:max-w-[90dvw] md:max-w-[80dvw] lg:max-w-[60dvw] flex-col gap-4 sm:gap-6 md:gap-8 px-4 sm:px-0">
-        <h1 className="text-center text-3xl sm:text-4xl md:text-6xl lg:text-8xl font-bold">
+      <div
+        id="teaser"
+        className="mx-auto mt-16 flex max-w-[95dvw] flex-col gap-4 px-4 sm:mt-24 sm:max-w-[90dvw] sm:gap-6 sm:px-0 md:mt-32 md:max-w-[80dvw] md:gap-8 lg:max-w-[60dvw]"
+      >
+        <h1 className="text-center text-3xl font-bold sm:text-4xl md:text-6xl lg:text-8xl">
           Test Your Knowledge
         </h1>
         <p className="text-center text-sm sm:text-base md:text-lg">
           {/* Demo the learning game we have. */}
         </p>
       </div>
-      <div className="border-primary mx-auto mt-8 sm:mt-12 md:mt-16 max-w-[95dvw] sm:max-w-[90dvw] md:max-w-[80dvw] lg:max-w-[60dvw] rounded-lg border p-3 sm:p-4 md:p-6">
+      <div className="border-primary mx-auto mt-8 max-w-[95dvw] rounded-lg border p-3 sm:mt-12 sm:max-w-[90dvw] sm:p-4 md:mt-16 md:max-w-[80dvw] md:p-6 lg:max-w-[60dvw]">
         <div className="flex flex-col justify-center gap-1">
-          <h2 className="text-lg sm:text-xl md:text-2xl font-bold">
+          <h2 className="text-lg font-bold sm:text-xl md:text-2xl">
             Indonesian Independence
           </h2>
-          <p className="text-sm sm:text-base">Fill the missing blank down below</p>
+          <p className="text-sm sm:text-base">
+            Fill the missing blank down below
+          </p>
         </div>
         <div className="border-primary mt-4 rounded-lg border">
-          <p className="p-3 sm:p-4 md:p-6 text-justify indent-4 sm:indent-6 md:indent-10 leading-relaxed sm:leading-loose tracking-tight text-sm sm:text-base md:text-lg">
+          <p className="p-3 text-justify indent-4 text-sm leading-relaxed tracking-tight sm:p-4 sm:indent-6 sm:text-base sm:leading-loose md:p-6 md:indent-10 md:text-lg">
             {questions}
           </p>
           <div className="bg-primary flex w-full">
-            <p className="px-3 sm:px-4 py-2 font-bold text-white text-sm sm:text-base">
+            <p className="px-3 py-2 text-sm font-bold text-white sm:px-4 sm:text-base">
               Score: {finalScore}
             </p>
           </div>

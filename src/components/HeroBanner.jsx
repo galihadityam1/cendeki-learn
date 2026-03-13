@@ -1,12 +1,21 @@
 "use client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Cookies from "universal-cookie";
 
 export default function HeroBanner() {
-  const cookies = new Cookies();
+  const cookies = useMemo(() => new Cookies(), []);
   const router = useRouter();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  // Ensure component is mounted before checking cookies
+  useEffect(() => {
+    setMounted(true);
+    setIsLoggedIn(!!cookies.get("Authorization"));
+  }, [cookies]);
+
   const goToLogin = async () => {
     let data = await cookies.get("Authorization");
     if (!data) {
@@ -21,7 +30,7 @@ export default function HeroBanner() {
   };
   return (
     <div
-      className="mx-auto mt-8 sm:mt-12 md:mt-16 flex h-[250px] sm:h-[300px] md:h-[363px] flex-col items-center justify-center gap-3 sm:gap-4 md:gap-6 overflow-clip rounded-xl sm:rounded-2xl max-w-[95%] sm:max-w-[90%] md:max-w-[85%] lg:max-w-[920px] px-4"
+      className="mx-auto mt-8 flex h-[250px] max-w-[95%] flex-col items-center justify-center gap-3 overflow-clip rounded-xl px-4 sm:mt-12 sm:h-[300px] sm:max-w-[90%] sm:gap-4 sm:rounded-2xl md:mt-16 md:h-[363px] md:max-w-[85%] md:gap-6 lg:max-w-[920px]"
       style={{
         backgroundImage: "url(/Learn.png)",
         backgroundSize: "cover",
@@ -29,26 +38,32 @@ export default function HeroBanner() {
         backgroundPosition: "center",
       }}
     >
-      <p className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-semibold invert text-center leading-tight">
+      <p className="text-center text-xl font-semibold leading-tight invert sm:text-2xl md:text-3xl lg:text-4xl">
         CENDEKIA LEARNING PLATFORM
       </p>
-      <p className="text-sm sm:text-base md:text-lg lg:text-xl invert text-center px-2">
+      <p className="px-2 text-center text-sm invert sm:text-base md:text-lg lg:text-xl">
         Where education meets entertainment!
       </p>
-      <div className="flex flex-col items-center justify-center sm:flex-row gap-3 sm:gap-4 md:gap-8 w-full max-w-xs sm:max-w-none">
-        <button
-          onClick={() => goToLogin()}
-          className="bg-primary flex w-full sm:w-32 md:w-36 max-w-[150px] items-center justify-center rounded-lg px-3 sm:px-4 py-2 sm:py-3 mx-auto sm:mx-0"
-        >
-          <p className="font-semibold invert text-sm sm:text-base">Login</p>
-        </button>
-        <Link
-          href="#teaser"
-          className="bg-primary flex w-full sm:w-32 md:w-36 max-w-[150px] items-center justify-center rounded-lg px-3 sm:px-4 py-2 sm:py-3 mx-auto sm:mx-0"
-        >
-          <p className="font-semibold invert text-sm sm:text-base">Try it for free!</p>
-        </Link>
-      </div>
+      {mounted && (
+        <div className="flex w-full max-w-xs flex-col items-center justify-center gap-3 sm:max-w-none sm:flex-row sm:gap-4 md:gap-8">
+          {!isLoggedIn && (
+            <button
+              onClick={() => goToLogin()}
+              className="bg-primary mx-auto flex w-full max-w-[150px] items-center justify-center rounded-lg px-3 py-2 sm:mx-0 sm:w-32 sm:px-4 sm:py-3 md:w-36"
+            >
+              <p className="text-sm font-semibold invert sm:text-base">Login</p>
+            </button>
+          )}
+          <Link
+            href={isLoggedIn ? "/lobby" : "#teaser"}
+            className="bg-primary mx-auto flex w-full max-w-[150px] items-center justify-center rounded-lg px-3 py-2 sm:mx-0 sm:w-32 sm:px-4 sm:py-3 md:w-36"
+          >
+            <p className="text-sm font-semibold invert sm:text-base">
+              {isLoggedIn ? "Categories" : "Try it for free!"}
+            </p>
+          </Link>
+        </div>
+      )}
     </div>
   );
 }
