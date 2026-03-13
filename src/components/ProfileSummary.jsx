@@ -1,14 +1,12 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import { LuBarChart2 } from "react-icons/lu";
 import { FaBookBookmark } from "react-icons/fa6";
 import { IoRibbonSharp } from "react-icons/io5";
 import { useAppContext } from "@/context";
 
 export default function ProfileSummary() {
-  const [profile, setProfile] = useState({});
   let category = useAppContext();
-  console.log(category.state);
 
   const statsData = [
     {

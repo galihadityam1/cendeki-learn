@@ -6,7 +6,6 @@ export async function POST(req){
     let body = await req.json()
     const {storyId, finalScore} = body
     const playDate = new Date()
-    console.log(storyId, finalScore, '<<< ini di api');
     const score = await ScoreModel.addScore({userId, score: finalScore, storyId, playDate})
     return NextResponse.json({
         status: 201,

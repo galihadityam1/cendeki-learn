@@ -44,7 +44,7 @@ export async function editProfile({ fullname, bio }) {
       Cookie: cookies().toString(),
     },
   });
-  // console.log(res);
+
   if (!res.ok) {
     return "Failed";
   }

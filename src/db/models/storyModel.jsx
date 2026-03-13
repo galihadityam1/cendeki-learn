@@ -13,7 +13,6 @@ export class StoryModel {
   }
 
   static async addStory(text) {
-    console.log(text, "Storymodel");
     return await this.collection().insertOne({
       title: text.title,
       fullStory: text.fullStory,

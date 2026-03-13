@@ -14,11 +14,7 @@ export async function GET(req) {
 
 export async function POST(req) {
   const body = await req.json()
-  console.log(body)
   const storyId = new ObjectId(String(body))
-  console.log(storyId)
-  // const { searchParams } = new URL(req.url);
-  // const category = searchParams.get("journey");
   const data = await StoryModel.getStoryById(storyId)
   return NextResponse.json({
     status: 200,

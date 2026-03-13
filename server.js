@@ -21,12 +21,10 @@ app.prepare().then(() => {
     // ...
     socket.emit("hello", "world");
     socket.on("coba", (value) => {
-      console.log(value, "di server");
       data = value;
     });
     socket.emit("leader", data);
     socket.on("trigger", (value) => {
-      console.log("masuk trigger");
       trigger = value;
     });
     io.emit("send", trigger);

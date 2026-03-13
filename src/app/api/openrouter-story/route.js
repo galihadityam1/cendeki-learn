@@ -39,7 +39,7 @@ export async function POST(req, res) {
     };
 
     const { data } = await axios.request(options);
-    console.log(data.choices[0].message.content, "OpenRouter API");
+    // console.log(data.choices[0].message.content, "OpenRouter API"); // !DO NOT CLEAR THIS CONSOLE.LOG
 
     let object;
     try {

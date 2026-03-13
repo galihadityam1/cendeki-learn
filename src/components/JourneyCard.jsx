@@ -31,7 +31,6 @@ export function JourneyCard({
 
     const { data } = await res.json();
 
-    console.log(data, "RESULT PROMPT HISTORY");
     setJourney(data.story);
     setStoryId(data._id);
     setCorrectAnswers(data.answer);

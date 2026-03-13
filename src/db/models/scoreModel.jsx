@@ -6,18 +6,13 @@ export class ScoreModel {
   static collection() {
     return getCollection("Scores");
   }
-  // static Collection() {
-  //     return getCollection("story")
-  // }
-  // Get
+
   static async getScoreById(_id) {
     const result = await this.collection().find({ id: _id });
     return result;
   }
 
   static async addScore({ userId, score, storyId, playDate }) {
-    // console.log(text,"<<<<<<<<<<<<<<<");
-    // console.log(userId, storyId, playDate);
     const idUser = new ObjectId(String(userId));
     const idStory = new ObjectId(String(storyId));
     return await this.collection().insertOne({

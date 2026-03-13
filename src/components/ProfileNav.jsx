@@ -2,7 +2,6 @@ import React from 'react'
 import EditProfile from './EditProfile'
 
 const ProfileNav = ({profile, getProfile}) => {
-  // console.log(profile);
   return (
     <div className="py-5 bg-slate-300 w-full h-40 items-center flex justify-center">
         <div className="flex flex-row items-center justify-center h-full w-[60%]">

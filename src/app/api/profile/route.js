@@ -35,5 +35,4 @@ export async function PATCH(request){
     } catch (error) {
         console.log(error);
     }
-    // console.log(profile);
 }

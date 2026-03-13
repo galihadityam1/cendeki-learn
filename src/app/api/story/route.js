@@ -1,7 +1,6 @@
 import { StoryModel } from "@/db/models/storyModel";
 import generateStory from "@/utils/geminiAI";
 import { NextResponse } from "next/server";
-import { ZodError } from "zod";
 
 export async function POST() {
   const prompt = `
@@ -12,7 +11,6 @@ export async function POST() {
 "answer" : string[]
 ]`;
   let result = await generateStory(prompt);
-  // console.log(result);
   result = result.replace("```json", "")
   result = result.replace("```", "")
 

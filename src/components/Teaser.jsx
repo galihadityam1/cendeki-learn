@@ -63,7 +63,6 @@ export default function Teaser({ animationData }) {
           borderClass = "border-b-2 border-teal-400 placeholder:invert";
         } else if (res == "Incorrect" && answer && answer.length !== 0) {
           borderClass = "border-b-2 border-rose-400 placeholder:invert";
-          console.log(borderClass, idx);
         } else {
           borderClass = "";
         }

@@ -5,9 +5,7 @@ import { NextResponse } from "next/server";
 import { ZodError } from "zod";
 
 export async function POST(req, { params }) {
-  console.log(params);
-  if (params.params === 'history') {
-
+  if (params.params === "history") {
     const prompt = `
   buatkan cerita tentang sejarah kemerdekaan Indonesia dalam satu paragraf dengan format json, dengan properti title adalah judul cerita tersebut, dengan properti fullStory adalah cerita penuh tanpa potongan, properti story adalah cerita penuh yang di hilangkan 5 kata diganti dengan ---- dan kata tersebut dimasukan dalam properti answer dalam bentuk array
   [
@@ -58,26 +56,21 @@ export async function POST(req, { params }) {
   "category" : history
   ]`;
 
-    const arr = [prompt, prompt2, prompt3, prompt4, prompt5]
+    const arr = [prompt, prompt2, prompt3, prompt4, prompt5];
     function getRandomPrompt(arr) {
       const randomIndex = Math.floor(Math.random() * arr.length);
       return arr[randomIndex];
     }
 
     const randomPrompt = getRandomPrompt(arr);
-    console.log(randomPrompt);
     let result = await generateStory(randomPrompt);
-    // console.log(result);
-    result = result.replace("```json", "")
-    result = result.replace("```", "")
-    console.log(result);
+    result = result.replace("```json", "");
+    result = result.replace("```", "");
     const res = await StoryModel.addStory({ result: JSON.parse(result) });
-    const story = await StoryModel.getStoryById(res.insertedId)
-
+    const story = await StoryModel.getStoryById(res.insertedId);
 
     return NextResponse.json({ data: story }, { status: 201 });
-
-  } else if (params.params === 'language') {
+  } else if (params.params === "language") {
     const prompt = `
   buatkan cerita tentang sejarah Bahasa Indonesia dalam satu paragraf dengan format json, dengan properti title adalah judul cerita tersebut, dengan properti fullStory adalah cerita penuh tanpa potongan, properti story adalah cerita penuh yang di hilangkan 5 kata diganti dengan ---- dan kata tersebut dimasukan dalam properti answer dalam bentuk array
   [
@@ -128,30 +121,25 @@ export async function POST(req, { params }) {
   "category" : language
   ]`;
 
-    const arr = [prompt, prompt2, prompt3, prompt4, prompt5]
+    const arr = [prompt, prompt2, prompt3, prompt4, prompt5];
     function getRandomPrompt(arr) {
       const randomIndex = Math.floor(Math.random() * arr.length);
       return arr[randomIndex];
     }
 
     const randomPrompt = getRandomPrompt(arr);
-    console.log(randomPrompt);
     let result = await generateStory(randomPrompt);
-    // console.log(result);
-    result = result.replace("```json", "")
-    result = result.replace("```", "")
-    // console.log(result);
+    result = result.replace("```json", "");
+    result = result.replace("```", "");
     const res = await StoryModel.addStory({ result: JSON.parse(result) });
-    const userId = req.headers.get('x-id-user')
-    console.log(userId, "<<<<<< user");
-    const storyId = res.insertedId
-    const score = await ScoreModel.addScore({ res, userId, storyId })
+    const userId = req.headers.get("x-id-user");
+    const storyId = res.insertedId;
+    const score = await ScoreModel.addScore({ res, userId, storyId });
 
-    const story = await StoryModel.getStoryById(res.insertedId)
-
+    const story = await StoryModel.getStoryById(res.insertedId);
 
     return NextResponse.json({ data: story }, { status: 201 });
-  } else if (params.params === 'social') {
+  } else if (params.params === "social") {
     const prompt = `
   buatkan cerita tentang adab sosial dalam satu paragraf dengan format json, dengan properti title adalah judul cerita tersebut, dengan properti fullStory adalah cerita penuh tanpa potongan, properti story adalah cerita penuh yang di hilangkan 5 kata diganti dengan ---- dan kata tersebut dimasukan dalam properti answer dalam bentuk array
   [
@@ -202,31 +190,28 @@ export async function POST(req, { params }) {
   "category" : social
   ]`;
 
-    const arr = [prompt, prompt2, prompt3, prompt4, prompt5]
+    const arr = [prompt, prompt2, prompt3, prompt4, prompt5];
     function getRandomPrompt(arr) {
       const randomIndex = Math.floor(Math.random() * arr.length);
       return arr[randomIndex];
     }
 
     const randomPrompt = getRandomPrompt(arr);
-    console.log(randomPrompt);
     let result = await generateStory(randomPrompt);
-    // console.log(result);
-    result = result.replace("```json", "")
-    result = result.replace("```", "")
-    // console.log(result);
+    result = result.replace("```json", "");
+    result = result.replace("```", "");
     const res = await StoryModel.addStory({ result: JSON.parse(result) });
-    const userId = req.headers.get('x-id-user')
-    // console.log(userId, "<<<<<< user");
-    const storyId = res.insertedId
-    const score = await ScoreModel.addScore({ res, userId, storyId })
+    const userId = req.headers.get("x-id-user");
+    const storyId = res.insertedId;
+    const score = await ScoreModel.addScore({ res, userId, storyId });
 
-    const story = await StoryModel.getStoryById(res.insertedId)
-
+    const story = await StoryModel.getStoryById(res.insertedId);
 
     return NextResponse.json({ data: story }, { status: 201 });
   } else {
-    return NextResponse.json({ data: 'Category is unavailable' }, { status: 404 });
+    return NextResponse.json(
+      { data: "Category is unavailable" },
+      { status: 404 },
+    );
   }
-
 }

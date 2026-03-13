@@ -28,8 +28,7 @@ const ButtonTryAgain = ({ id }) => {
       });
     }
 
-    const {status, data} = await res.json();
-    console.log(data, "BUTTON");
+    const {data} = await res.json();
     setStory(data)
     router.push(`/${data.category}/revisit`)
   };

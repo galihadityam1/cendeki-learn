@@ -39,7 +39,6 @@ export class UserModel {
   static async addUser(user) {
     const validation = AddUserSchema.safeParse(user);
     if (!validation.success) {
-      console.log(validation);
       throw validation.error;
     }
     
@@ -146,7 +145,6 @@ export class UserModel {
     ];
     const cursor = this.collection().aggregate(agg);
     const result = await cursor.toArray();
-    // console.log(result);
     return result[0];
   }
 
@@ -180,7 +178,6 @@ export class UserModel {
   static async googleLogin(data) {
     const user = await this.collection().findOne({ email: data.email })
     if (!user) {
-      console.log(data);
       return await this.addUser(data)
     }
     return user
