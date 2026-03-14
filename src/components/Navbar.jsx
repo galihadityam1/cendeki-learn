@@ -2,6 +2,7 @@
 import { cn } from "@/utils/cn";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import React, { useState, useEffect } from "react";
 import Cookies from "universal-cookie";
 import { HiMenu, HiX } from "react-icons/hi";
@@ -112,10 +113,12 @@ export default function Navbar({ className }) {
             className="group flex flex-shrink-0 items-center gap-3"
           >
             <div className="relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl shadow-lg shadow-sky-500/20 transition-transform group-hover:scale-105 sm:h-12 sm:w-12">
-              <img
+              <Image
                 src="/logo.png"
                 alt="Cendekia Logo"
                 className="h-full w-full object-cover"
+                width={40}
+                height={40}
               />
             </div>
             <h1 className="text-lg font-bold tracking-tight text-white transition-colors group-hover:text-sky-300 sm:text-2xl">

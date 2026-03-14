@@ -3,6 +3,7 @@ import { profile } from "@/actions/actions";
 import { useAppContext } from "@/context";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import Cookies from "universal-cookie";
@@ -103,10 +104,12 @@ export default function Sidebar() {
             onClick={closeSidebar}
           >
             <div className="relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl shadow-lg shadow-sky-500/20 transition-transform group-hover:scale-105 sm:h-12 sm:w-12">
-              <img
+              <Image
                 src="/logo.png"
                 alt="Cendekia Logo"
                 className="h-full w-full object-cover"
+                width={40}
+                height={40}
               />
             </div>
             <h2 className="ml-3 text-xl font-bold tracking-tight text-white transition-colors group-hover:text-sky-300 sm:text-2xl">
@@ -152,10 +155,12 @@ export default function Sidebar() {
             className="group flex items-center gap-3 rounded-xl border border-transparent p-3 transition-all duration-300 hover:border-slate-800/50 hover:bg-slate-900"
             onClick={closeSidebar}
           >
-            <img
+            <Image
               src="https://images.pexels.com/photos/279360/pexels-photo-279360.jpeg"
               className="h-10 w-10 flex-shrink-0 rounded-full border-2 border-slate-700 object-cover transition-colors group-hover:border-sky-500"
               alt="Profile"
+              width={40}
+              height={40}
             />
             <div className="min-w-0 flex-1">
               <p className="truncate text-sm font-bold text-white transition-colors group-hover:text-sky-300">

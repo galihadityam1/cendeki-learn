@@ -1,6 +1,7 @@
 "use client";
 import { BASE_URL } from "@/db/config/constant";
 import React, { useEffect, useState } from "react";
+import Image from "next/image";
 import { PiStarFourBold, PiCrownFill } from "react-icons/pi";
 import { SparklesCore } from "@/components/ui/sparkles";
 import { cn } from "@/utils/cn";
@@ -73,10 +74,12 @@ export default function Page() {
             <div className="group relative flex w-24 flex-col items-center transition-transform hover:-translate-y-2 sm:w-32">
               <div className="absolute -top-16 flex flex-col items-center gap-2">
                 <div className="relative size-12 rounded-full border-4 border-slate-300 bg-slate-800 p-1 shadow-[0_0_15px_rgba(203,213,225,0.5)] sm:size-16">
-                  <img
-                    src="logo.png"
+                  <Image
+                    src="/logo.png"
                     alt=""
                     className="h-full w-full object-contain"
+                    width={48}
+                    height={48}
                   />
                 </div>
                 <p className="w-full truncate px-2 text-center text-xs font-bold text-slate-300 sm:text-sm">
@@ -102,10 +105,12 @@ export default function Page() {
               <div className="absolute -top-24 flex flex-col items-center gap-2">
                 <PiCrownFill className="absolute -top-6 size-8 text-amber-400 drop-shadow-[0_0_10px_rgba(251,191,36,0.8)] sm:size-10" />
                 <div className="relative size-16 rounded-full border-4 border-amber-400 bg-slate-800 p-1 shadow-[0_0_20px_rgba(251,191,36,0.6)] sm:size-20">
-                  <img
-                    src="logo.png"
+                  <Image
+                    src="/logo.png"
                     alt=""
                     className="h-full w-full object-contain"
+                    width={48}
+                    height={48}
                   />
                 </div>
                 <p className="w-full truncate px-2 text-center text-sm font-black text-amber-400 sm:text-base">
@@ -131,10 +136,12 @@ export default function Page() {
             <div className="group relative flex w-24 flex-col items-center transition-transform hover:-translate-y-2 sm:w-32">
               <div className="absolute -top-14 flex flex-col items-center gap-2">
                 <div className="relative size-12 rounded-full border-4 border-amber-700 bg-slate-800 p-1 shadow-[0_0_15px_rgba(180,83,9,0.5)] sm:size-14">
-                  <img
-                    src="logo.png"
+                  <Image
+                    src="/logo.png"
                     alt=""
                     className="h-full w-full object-contain"
+                    width={48}
+                    height={48}
                   />
                 </div>
                 <p className="w-full truncate px-2 text-center text-xs font-bold text-amber-600 sm:text-sm">
