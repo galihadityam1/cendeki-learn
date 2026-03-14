@@ -1,22 +1,24 @@
 import { StoryModel } from "@/db/models/storyModel";
-import generateStory from "@/utils/geminiAI";
 import { NextResponse } from "next/server";
 
 export async function POST() {
-  const prompt = `
-  buatkan cerita tentang pangeran diponogoro dalam satu paragraf dengan format json, dengan properti fullStory adalah cerita penuh tanpa potongan, properti story adalah cerita penuh yang di hilangkan 5 kata diganti dengan ---- dan kata tersebut dimasukan dalam properti answer dalam bentuk array
-[
-"fullStory": string,
-"story": string,
-"answer" : string[]
-]`;
-  let result = await generateStory(prompt);
-  result = result.replace("```json", "")
-  result = result.replace("```", "")
+  // Return mock data since geminiAI is removed
+  const mockResult = {
+    fullStory:
+      "Pangeran Diponegoro adalah pahlawan nasional yang memimpin perlawanan melawan Belanda di Jawa. Ia berperang dengan gagah berani selama bertahun-tahun untuk mempertahankan kemerdekaan bangsanya.",
+    story:
+      "Pangeran Diponegoro adalah ---- nasional yang memimpin ---- melawan Belanda di Jawa. Ia ---- dengan gagah berani selama ---- tahun untuk mempertahankan ---- bangsanya.",
+    answer: [
+      "pahlawan",
+      "perlawanan",
+      "berperang",
+      "bertahun-tahun",
+      "kemerdekaan",
+    ],
+  };
 
-  const res = await StoryModel.addStory({ result: JSON.parse(result) });
-  
-  const story = await StoryModel.getStoryById(res.insertedId)
+  const res = await StoryModel.addStory({ result: mockResult });
+  const story = await StoryModel.getStoryById(res.insertedId);
 
   return NextResponse.json({ data: story }, { status: 201 });
 }
