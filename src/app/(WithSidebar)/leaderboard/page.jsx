@@ -72,8 +72,8 @@ export default function Page() {
           <div className="mb-16 mt-8 flex h-72 flex-row items-end justify-center gap-2 sm:gap-4 md:gap-8">
             {/* Rank 2 */}
             <div className="group relative flex w-24 flex-col items-center transition-transform hover:-translate-y-2 sm:w-32">
-              <div className="absolute -top-16 flex flex-col items-center gap-2">
-                <div className="relative size-12 rounded-full border-4 border-slate-300 bg-slate-800 p-1 shadow-[0_0_15px_rgba(203,213,225,0.5)] sm:size-16">
+              <div className="absolute -top-24 flex flex-col items-center gap-2">
+                <div className="relative z-10 size-12 rounded-full border-4 border-slate-300 bg-slate-800 p-1 shadow-[0_0_15px_rgba(203,213,225,0.5)] sm:size-16">
                   <Image
                     src="/logo.png"
                     alt=""
@@ -82,10 +82,10 @@ export default function Page() {
                     height={48}
                   />
                 </div>
-                <p className="w-full truncate px-2 text-center text-xs font-bold text-slate-300 sm:text-sm">
+                <p className="z-10 w-full truncate px-2 text-center text-xs font-bold text-slate-300 sm:text-sm">
                   {champ[1]?.name}
                 </p>
-                <div className="flex text-slate-300 drop-shadow-[0_0_8px_rgba(203,213,225,0.8)]">
+                <div className="z-50 flex text-slate-300 drop-shadow-[0_0_8px_rgba(203,213,225,0.8)]">
                   <PiStarFourBold className="size-4 sm:size-5" />
                   <PiStarFourBold className="size-5 sm:size-6" />
                 </div>
@@ -102,9 +102,9 @@ export default function Page() {
 
             {/* Rank 1 */}
             <div className="group relative z-10 flex w-28 flex-col items-center transition-transform hover:-translate-y-2 sm:w-40">
-              <div className="absolute -top-24 flex flex-col items-center gap-2">
-                <PiCrownFill className="absolute -top-6 size-8 text-amber-400 drop-shadow-[0_0_10px_rgba(251,191,36,0.8)] sm:size-10" />
-                <div className="relative size-16 rounded-full border-4 border-amber-400 bg-slate-800 p-1 shadow-[0_0_20px_rgba(251,191,36,0.6)] sm:size-20">
+              <div className="absolute -top-[120px] flex flex-col items-center gap-2">
+                <PiCrownFill className="absolute -top-6 z-50 size-8 text-amber-400 drop-shadow-[0_0_10px_rgba(251,191,36,0.8)] sm:size-10" />
+                <div className="relative z-10 size-16 rounded-full border-4 border-amber-400 bg-slate-800 p-1 shadow-[0_0_20px_rgba(251,191,36,0.6)] sm:size-20">
                   <Image
                     src="/logo.png"
                     alt=""
@@ -113,10 +113,10 @@ export default function Page() {
                     height={48}
                   />
                 </div>
-                <p className="w-full truncate px-2 text-center text-sm font-black text-amber-400 sm:text-base">
+                <p className="z-10 w-full truncate px-2 text-center text-sm font-black text-amber-400 sm:text-base">
                   {champ[0]?.name}
                 </p>
-                <div className="flex text-amber-400 drop-shadow-[0_0_8px_rgba(251,191,36,0.8)]">
+                <div className="z-50 flex text-amber-400 drop-shadow-[0_0_8px_rgba(251,191,36,0.8)]">
                   <PiStarFourBold className="size-4 sm:size-5" />
                   <PiStarFourBold className="size-6 sm:size-8" />
                   <PiStarFourBold className="size-4 sm:size-5" />
@@ -134,8 +134,8 @@ export default function Page() {
 
             {/* Rank 3 */}
             <div className="group relative flex w-24 flex-col items-center transition-transform hover:-translate-y-2 sm:w-32">
-              <div className="absolute -top-14 flex flex-col items-center gap-2">
-                <div className="relative size-12 rounded-full border-4 border-amber-700 bg-slate-800 p-1 shadow-[0_0_15px_rgba(180,83,9,0.5)] sm:size-14">
+              <div className="absolute -top-[88px] flex flex-col items-center gap-2">
+                <div className="relative z-10 size-12 rounded-full border-4 border-amber-700 bg-slate-800 p-1 shadow-[0_0_15px_rgba(180,83,9,0.5)] sm:size-14">
                   <Image
                     src="/logo.png"
                     alt=""
@@ -144,11 +144,11 @@ export default function Page() {
                     height={48}
                   />
                 </div>
-                <p className="w-full truncate px-2 text-center text-xs font-bold text-amber-600 sm:text-sm">
+                <p className="z-10 w-full truncate px-2 text-center text-xs font-bold text-amber-600 sm:text-sm">
                   {champ[2]?.name}
                 </p>
-                <div className="flex text-amber-600 drop-shadow-[0_0_8px_rgba(180,83,9,0.8)]">
-                  <PiStarFourBold className="size-5 sm:size-6" />
+                <div className="z-50 flex text-amber-600 drop-shadow-[0_0_8px_rgba(180,83,9,0.8)]">
+                  <PiStarFourBold className="size-4 sm:size-5" />
                 </div>
               </div>
               <div className="flex h-32 w-full flex-col items-center justify-center rounded-t-xl border border-b-0 border-amber-800/50 bg-gradient-to-t from-slate-900 via-slate-800 to-amber-900/40 shadow-2xl backdrop-blur-sm">

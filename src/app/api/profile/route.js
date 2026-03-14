@@ -15,19 +15,16 @@ export async function PATCH(request) {
   try {
     const idUser = headers().get("x-id-user");
     let body = await request.json();
-    const { fullname, bio } = body;
-    if (!bio) {
-      await UserModel.updateProfile({ idUser, fullname });
-    }
+    const { fullname, bio, age } = body;
 
-    if (!fullname) {
-      await UserModel.updateProfile({ idUser, bio });
-    }
-    if (fullname && bio) {
-      await UserModel.updateProfile({ idUser, fullname, bio });
-    }
+    const updateData = {};
+    if (fullname) updateData.fullname = fullname;
+    if (bio) updateData.bio = bio;
+    if (age) updateData.age = age;
 
+    await UserModel.updateProfile({ idUser, ...updateData });
     const data = await UserModel.findProfile(idUser);
+
     return NextResponse.json({
       status: 201,
       data,

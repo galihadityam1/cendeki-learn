@@ -18,6 +18,7 @@ export default function Sidebar() {
   const [isMobile, setIsMobile] = useState(false);
   const router = useRouter();
   const cookies = new Cookies();
+  const dataProfile = useAppContext();
 
   // Check if device is mobile
   useEffect(() => {
@@ -52,8 +53,6 @@ export default function Sidebar() {
     cookies.remove("Authorization", { path: "/profile" });
     return router.push("/login");
   }
-
-  const dataProfile = useAppContext();
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);

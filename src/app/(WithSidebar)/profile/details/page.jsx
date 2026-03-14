@@ -4,18 +4,29 @@ import { useAppContext } from "@/context";
 import React, { useEffect, useState } from "react";
 import ProfileSummary from "@/components/ProfileSummary";
 import { SparklesCore } from "@/components/ui/sparkles";
-import { FiUser, FiMail, FiCalendar } from "react-icons/fi";
+import { FiUser, FiMail, FiCalendar, FiFileText } from "react-icons/fi";
 
 export default function Page() {
   const dataProfile = useAppContext();
   const [isEditing, setIsEditing] = useState(false);
 
-  useEffect(() => {}, [dataProfile.state]);
+  useEffect(() => {
+    if (dataProfile.state) {
+      // Profile data is available
+    }
+  }, [dataProfile.state]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
-    await editProfile(formData);
+    const fullname = formData.get("fullname");
+    const bio = formData.get("bio");
+    const age = formData.get("age");
+
+    await editProfile({ fullname, bio, age: parseInt(age) });
+
+    // Refresh profile data after update
+    await dataProfile.refreshProfile();
     setIsEditing(false);
   };
 
@@ -102,6 +113,20 @@ export default function Page() {
                     </div>
                   </div>
 
+                  <div className="flex items-start gap-4 rounded-xl border border-slate-800/50 bg-slate-950/50 p-4">
+                    <div className="mt-1 rounded-lg bg-slate-800 p-3 text-sky-400">
+                      <FiFileText className="size-5" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="mb-1 text-xs font-bold uppercase tracking-wider text-slate-500">
+                        Bio
+                      </p>
+                      <p className="whitespace-pre-wrap text-lg font-medium text-white">
+                        {dataProfile?.state?.bio || "No bio set"}
+                      </p>
+                    </div>
+                  </div>
+
                   <div className="flex items-center gap-4 rounded-xl border border-slate-800/50 bg-slate-950/50 p-4">
                     <div className="rounded-lg bg-slate-800 p-3 text-sky-400">
                       <FiCalendar className="size-5" />
@@ -140,7 +165,21 @@ export default function Page() {
                       type="email"
                       name="email"
                       defaultValue={dataProfile?.state?.email}
-                      className="h-14 w-full rounded-xl border border-slate-700 bg-slate-950/80 px-5 text-base text-white shadow-inner transition-all duration-200 placeholder:text-slate-500 focus:border-sky-500 focus:bg-slate-900 focus:outline-none focus:ring-1 focus:ring-sky-500"
+                      disabled
+                      className="h-14 w-full cursor-not-allowed rounded-xl border border-slate-700 bg-slate-800/60 px-5 text-base text-slate-400 shadow-inner transition-all duration-200 placeholder:text-slate-500"
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="ml-1 text-sm font-semibold text-slate-300">
+                      Bio
+                    </label>
+                    <textarea
+                      name="bio"
+                      defaultValue={dataProfile?.state?.bio || ""}
+                      rows={4}
+                      className="w-full resize-none rounded-xl border border-slate-700 bg-slate-950/80 px-5 py-3 text-base text-white shadow-inner transition-all duration-200 placeholder:text-slate-500 focus:border-sky-500 focus:bg-slate-900 focus:outline-none focus:ring-1 focus:ring-sky-500"
+                      placeholder="Tell us about yourself..."
                     />
                   </div>
 

@@ -9,6 +9,7 @@ const AddUserSchema = z.object({
   email: z.string().email(),
   password: z.string().min(5),
   age: z.number(),
+  bio: z.string().optional(),
 });
 
 const LoginUserSchema = z.object({
@@ -151,29 +152,17 @@ export class UserModel {
     return result[0];
   }
 
-  static async updateProfile({ idUser, fullname, bio }) {
+  static async updateProfile({ idUser, fullname, bio, age }) {
+    const collection = await this.collection();
     const id = new ObjectId(String(idUser));
-    if (!fullname) {
-      const res = await this.collection().updateOne(
-        { _id: id },
-        { $set: { bio: bio } },
-      );
-      return res;
-    }
-    if (!bio) {
-      const res = await this.collection().updateOne(
-        { _id: id },
-        { $set: { fullname } },
-      );
-      return res;
-    }
-    if (bio && fullname) {
-      const res = await this.collection().updateOne(
-        { _id: id },
-        { $set: { fullname: fullname, bio: bio } },
-      );
-      return res;
-    }
+    const updateData = {};
+
+    if (fullname) updateData.fullname = fullname;
+    if (bio) updateData.bio = bio;
+    if (age) updateData.age = age;
+
+    const res = await collection.updateOne({ _id: id }, { $set: updateData });
+    return res;
   }
 
   static async googleLogin(data) {

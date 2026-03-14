@@ -15,10 +15,17 @@ export function AppWrapper({ children }) {
 
   useEffect(() => {
     getProfile();
-  }, [editProfile]);
+  }, []);
+
+  // Function to refresh profile data
+  const refreshProfile = async () => {
+    await getProfile();
+  };
 
   return (
-    <AppContext.Provider value={{ state, getProfile, story, setStory }}>
+    <AppContext.Provider
+      value={{ state, getProfile, refreshProfile, story, setStory }}
+    >
       {children}
     </AppContext.Provider>
   );
