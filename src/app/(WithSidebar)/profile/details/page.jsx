@@ -1,93 +1,182 @@
 "use client";
 import { editProfile } from "@/actions/actions";
 import { useAppContext } from "@/context";
-import React, { useEffect } from "react";
-
+import React, { useEffect, useState } from "react";
 import ProfileSummary from "@/components/ProfileSummary";
-import EditProfile from "@/components/EditProfile";
+import { SparklesCore } from "@/components/ui/sparkles";
+import { FiUser, FiMail, FiCalendar } from "react-icons/fi";
 
-const Page = () => {
-  let context = useAppContext();
-  let { getProfile, state } = context;
+export default function Page() {
+  const dataProfile = useAppContext();
+  const [isEditing, setIsEditing] = useState(false);
 
-  useEffect(() => {
-    getProfile();
-  }, [editProfile]);
+  useEffect(() => {}, [dataProfile.state]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    await editProfile(formData);
+    setIsEditing(false);
+  };
 
   return (
-    <div className="flex w-full flex-col items-center gap-6 py-8 px-4 sm:py-12 sm:px-6 lg:py-16 lg:px-8">
-      {/* Page Title */}
-      <h1 className="text-primary text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-4">
-        My Profile
-      </h1>
-      
-      {/* Profile Card */}
-      <div className="w-full max-w-7xl">
-        <div
-          className="relative flex flex-col lg:flex-row items-center lg:items-start gap-6 lg:gap-8 overflow-hidden rounded-xl p-6 sm:p-8 lg:p-12 shadow-lg"
-          style={{
-            backgroundImage: 'url("/autumn.png")',
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            backgroundRepeat: "no-repeat",
-          }}
-        >
-          {/* Background Overlay for better readability */}
-          <div className="absolute inset-0 bg-black bg-opacity-20"></div>
-          
-          {/* Profile Image */}
-          <div className="relative z-10 flex-shrink-0">
-            <img
-              src="https://images.pexels.com/photos/279360/pexels-photo-279360.jpeg"
-              className="w-24 h-24 sm:w-32 sm:h-32 lg:w-40 lg:h-40 rounded-full object-cover border-4 border-white shadow-lg"
-              alt="Profile"
-            />
+    <div className="relative min-h-screen w-full overflow-hidden bg-slate-950 px-4 py-12 text-slate-100 sm:px-6 lg:px-8">
+      {/* Background Sparkles */}
+      <div className="pointer-events-none absolute inset-0 z-0 h-screen w-full">
+        <SparklesCore
+          id="tsparticlesprofile"
+          background="transparent"
+          minSize={0.6}
+          maxSize={1.4}
+          particleDensity={30}
+          className="h-full w-full"
+          particleColor="#38bdf8"
+        />
+        <div className="absolute inset-0 bg-slate-950 [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]" />
+      </div>
+
+      <div className="relative z-10 mx-auto max-w-4xl pt-8">
+        <div className="mb-12 flex flex-col items-center gap-4 text-center">
+          <div className="inline-flex items-center rounded-full border border-sky-400/30 bg-sky-500/10 px-4 py-1.5 backdrop-blur-md">
+            <span className="text-xs font-bold uppercase tracking-widest text-sky-400">
+              Account Settings
+            </span>
+          </div>
+          <h1 className="bg-gradient-to-br from-white to-slate-400 bg-clip-text text-4xl font-extrabold tracking-tight text-transparent sm:text-5xl">
+            My Profile
+          </h1>
+        </div>
+
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-12">
+          {/* Left Column: Summary Card */}
+          <div className="md:col-span-4">
+            <ProfileSummary dataProfile={dataProfile} />
           </div>
 
-          {/* Profile Information */}
-          <div className="relative z-10 flex-1 w-full lg:max-w-none">
-            <div className="bg-white bg-opacity-95 backdrop-blur-sm rounded-xl p-4 sm:p-6 lg:p-8 shadow-lg">
-              {/* Name and Email Row */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-6">
-                <div className="space-y-1">
-                  <p className="text-xs sm:text-sm font-semibold text-gray-500 uppercase tracking-wide">
-                    Full Name
-                  </p>
-                  <p className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-800 break-words">
-                    {state.fullname || "Not provided"}
-                  </p>
-                </div>
-                <div className="space-y-1">
-                  <p className="text-xs sm:text-sm font-semibold text-gray-500 uppercase tracking-wide">
-                    Email
-                  </p>
-                  <p className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-800 break-all">
-                    {state.email || "Not provided"}
-                  </p>
-                </div>
+          {/* Right Column: Details/Edit Form */}
+          <div className="md:col-span-8">
+            <div className="rounded-[2rem] border border-slate-800/60 bg-slate-900/60 p-8 shadow-2xl backdrop-blur-xl">
+              <div className="mb-8 flex items-center justify-between">
+                <h2 className="text-2xl font-bold text-white">
+                  Personal Information
+                </h2>
+                <button
+                  onClick={() => setIsEditing(!isEditing)}
+                  className={`rounded-xl px-4 py-2 text-sm font-bold transition-all ${
+                    isEditing
+                      ? "bg-slate-800 text-slate-300 hover:bg-slate-700"
+                      : "border border-sky-500/30 bg-sky-500/10 text-sky-400 hover:bg-sky-500/20"
+                  }`}
+                >
+                  {isEditing ? "Cancel Edit" : "Edit Profile"}
+                </button>
               </div>
 
-              {/* Bio Section */}
-              <div className="space-y-2">
-                <p className="text-xs sm:text-sm font-semibold text-gray-500 uppercase tracking-wide">
-                  Bio
-                </p>
-                <p className="text-base sm:text-lg lg:text-xl font-medium text-gray-700 leading-relaxed">
-                  {state.bio || "No bio available"}
-                </p>
-              </div>
+              {!isEditing ? (
+                <div className="space-y-6">
+                  <div className="flex items-center gap-4 rounded-xl border border-slate-800/50 bg-slate-950/50 p-4">
+                    <div className="rounded-lg bg-slate-800 p-3 text-sky-400">
+                      <FiUser className="size-5" />
+                    </div>
+                    <div>
+                      <p className="mb-1 text-xs font-bold uppercase tracking-wider text-slate-500">
+                        Full Name
+                      </p>
+                      <p className="text-lg font-medium text-white">
+                        {dataProfile?.state?.fullname || "Not set"}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-4 rounded-xl border border-slate-800/50 bg-slate-950/50 p-4">
+                    <div className="rounded-lg bg-slate-800 p-3 text-sky-400">
+                      <FiMail className="size-5" />
+                    </div>
+                    <div>
+                      <p className="mb-1 text-xs font-bold uppercase tracking-wider text-slate-500">
+                        Email Address
+                      </p>
+                      <p className="text-lg font-medium text-white">
+                        {dataProfile?.state?.email || "Not set"}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-4 rounded-xl border border-slate-800/50 bg-slate-950/50 p-4">
+                    <div className="rounded-lg bg-slate-800 p-3 text-sky-400">
+                      <FiCalendar className="size-5" />
+                    </div>
+                    <div>
+                      <p className="mb-1 text-xs font-bold uppercase tracking-wider text-slate-500">
+                        Age
+                      </p>
+                      <p className="text-lg font-medium text-white">
+                        {dataProfile?.state?.age
+                          ? `${dataProfile.state.age} years old`
+                          : "Not set"}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <form onSubmit={handleSubmit} className="space-y-5">
+                  <div className="space-y-1">
+                    <label className="ml-1 text-sm font-semibold text-slate-300">
+                      Full Name
+                    </label>
+                    <input
+                      type="text"
+                      name="fullname"
+                      defaultValue={dataProfile?.state?.fullname}
+                      className="h-14 w-full rounded-xl border border-slate-700 bg-slate-950/80 px-5 text-base text-white shadow-inner transition-all duration-200 placeholder:text-slate-500 focus:border-sky-500 focus:bg-slate-900 focus:outline-none focus:ring-1 focus:ring-sky-500"
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="ml-1 text-sm font-semibold text-slate-300">
+                      Email Address
+                    </label>
+                    <input
+                      type="email"
+                      name="email"
+                      defaultValue={dataProfile?.state?.email}
+                      className="h-14 w-full rounded-xl border border-slate-700 bg-slate-950/80 px-5 text-base text-white shadow-inner transition-all duration-200 placeholder:text-slate-500 focus:border-sky-500 focus:bg-slate-900 focus:outline-none focus:ring-1 focus:ring-sky-500"
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="ml-1 text-sm font-semibold text-slate-300">
+                      Age
+                    </label>
+                    <input
+                      type="number"
+                      name="age"
+                      defaultValue={dataProfile?.state?.age}
+                      className="h-14 w-full rounded-xl border border-slate-700 bg-slate-950/80 px-5 text-base text-white shadow-inner transition-all duration-200 placeholder:text-slate-500 focus:border-sky-500 focus:bg-slate-900 focus:outline-none focus:ring-1 focus:ring-sky-500"
+                    />
+                  </div>
+
+                  <div className="flex gap-4 pt-4">
+                    <button
+                      type="button"
+                      onClick={() => setIsEditing(false)}
+                      className="h-14 flex-1 rounded-xl border border-slate-700 bg-slate-800 px-4 text-lg font-bold text-white transition-all duration-300 hover:bg-slate-700"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      className="h-14 flex-1 rounded-xl bg-sky-500 px-4 text-lg font-bold text-white shadow-lg shadow-sky-500/20 transition-all duration-300 hover:bg-sky-400 hover:shadow-sky-400/40 active:scale-[0.98]"
+                    >
+                      Save Changes
+                    </button>
+                  </div>
+                </form>
+              )}
             </div>
           </div>
         </div>
       </div>
-
-      {/* Profile Components */}
-      <div className="w-full max-w-7xl space-y-6 lg:space-y-8">
-        <ProfileSummary />
-        <EditProfile getProfile={getProfile} />
-      </div>
     </div>
   );
-};
-
-export default Page;
+}

@@ -7,8 +7,8 @@ import Swal from "sweetalert2";
 import Cookies from "universal-cookie";
 
 const ButtonTryAgain = ({ id }) => {
-  const router = useRouter()
-  const { story, setStory } = useAppContext();
+  const router = useRouter();
+  const { setStory } = useAppContext();
   const cookies = new Cookies();
   const handleSubmit = async () => {
     let res = await fetch(`${BASE_URL}/api/journey/retry?storyId=${id}`, {
@@ -28,14 +28,14 @@ const ButtonTryAgain = ({ id }) => {
       });
     }
 
-    const {data} = await res.json();
-    setStory(data)
-    router.push(`/${data.category}/revisit`)
+    const { data } = await res.json();
+    setStory(data);
+    router.push(`/${data.category}/revisit`);
   };
   return (
     <>
       <button
-        className="border-primary bg-sky-100 h-10 rounded-md border hover:shadow hover:shadow-sky-500"
+        className="h-10 rounded-lg border border-sky-500/30 bg-sky-500/10 px-4 text-sm font-bold text-sky-400 shadow-lg shadow-sky-500/20 transition-all duration-300 hover:border-sky-500/50 hover:bg-sky-500/20 hover:text-sky-300 hover:shadow-sky-500/40 active:scale-95"
         onClick={handleSubmit}
       >
         Try Again

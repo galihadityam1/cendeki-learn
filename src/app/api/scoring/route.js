@@ -1,14 +1,31 @@
-import { ScoreModel } from "@/db/models/scoreModel"
-import { NextResponse } from "next/server"
+import { ScoreModel } from "@/db/models/scoreModel";
+import { NextResponse } from "next/server";
 
-export async function POST(req){
-    const userId = req.headers.get('x-id-user')
-    let body = await req.json()
-    const {storyId, finalScore} = body
-    const playDate = new Date()
-    const score = await ScoreModel.addScore({userId, score: finalScore, storyId, playDate})
+export async function POST(request) {
+  try {
+    let body = await request.json();
+    const userId = request.headers.get("x-id-user");
+    const playDate = new Date();
+
+    const score = await ScoreModel.addScore({
+      userId,
+      score: body.score,
+      storyId: body.storyId,
+      playDate,
+    });
+
     return NextResponse.json({
-        status: 201,
-        data: score
-    })
+      status: 201,
+      data: score,
+      message: "Score added successfully",
+    });
+  } catch (error) {
+    return NextResponse.json(
+      {
+        status: 500,
+        message: "Internal server error",
+      },
+      { status: 500 },
+    );
+  }
 }

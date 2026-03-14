@@ -9,43 +9,48 @@
   .font-outline-4 {
     -webkit-text-stroke: 4px black;
   }
+  
+  body {
+    @apply bg-slate-950 text-slate-100;
+  }
 }
 
 .navbar-fixed-top.scrolled {
-  background-color: #fff !important;
-  transition: background-color 200ms linear;
+  @apply bg-slate-900/80 backdrop-blur-md border-b border-slate-800;
+  transition: all 200ms linear;
 }
 
+/* Updated color variables for backward compatibility if needed */
 .bg-primary {
-  background-color: #1860b6;
+  @apply bg-sky-500;
 }
 
 .bg-accent {
-  background-color: #ecf5ff;
+  @apply bg-slate-900;
 }
 
 .btn-primary {
-  background-color: #1860b6;
+  @apply bg-sky-500 hover:bg-sky-400;
 }
 
 .text-primary {
-  color: #1860b6;
+  @apply text-sky-400;
 }
 
 .text-secondary {
-  color: #2563eb;
+  @apply text-indigo-400;
 }
 
 .border-primary {
-  border-color: #1860b6;
+  @apply border-slate-700/50;
 }
 
 .decoration-primary {
-  text-decoration-color: #1860b6;
+  @apply decoration-sky-500;
 }
 
 .custom-spin {
-  animation: customSpin 2s linear infinite; /* Change '3s' to your desired duration */
+  animation: customSpin 2s linear infinite;
 }
 
 @keyframes customSpin {
@@ -58,22 +63,35 @@
 }
 
 .loading-color {
-  background-color: #93c5fd;
+  @apply bg-slate-800;
 }
 
 .correct-answer {
-  color: #14b8a6;
-  --tw-border-opacity: 1;
-  border-color: rgb(45 212 191 / var(--tw-border-opacity));
-  border-bottom-width: 2px;
+  @apply text-emerald-400 border-emerald-500 bg-emerald-500/10 border-b-2;
 }
 
 .correct-feedback {
-  --tw-text-opacity: 1;
-  color: rgb(6 182 212 / var(--tw-text-opacity));
+  @apply text-emerald-400 font-bold;
 }
 
 .incorrect-feedback {
-  --tw-text-opacity: 1;
-  color: rgb(244 63 94 / var(--tw-text-opacity));
+  @apply text-rose-400 font-bold;
+}
+
+/* Custom Scrollbar for global usage */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-slate-950;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-800 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-slate-700;
 }

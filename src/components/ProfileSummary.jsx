@@ -10,70 +10,72 @@ export default function ProfileSummary() {
 
   const statsData = [
     {
-      icon: <FaBookBookmark className="mx-auto self-center text-2xl sm:text-3xl lg:text-4xl xl:text-5xl 2xl:text-7xl text-white" />,
+      icon: (
+        <FaBookBookmark className="size-6 text-sky-400 transition-transform group-hover:scale-110 sm:size-8 lg:size-10" />
+      ),
       title: "Total Stories",
       value: category.state?.history?.length || 0,
-      isLast: false
+      gradient: "from-sky-500/20 to-sky-900/20",
+      border: "border-sky-500/30",
+      text: "text-sky-400",
     },
     {
-      icon: <LuBarChart2 className="mx-auto self-center text-2xl sm:text-3xl lg:text-4xl xl:text-5xl 2xl:text-7xl text-white" />,
+      icon: (
+        <LuBarChart2 className="size-6 text-emerald-400 transition-transform group-hover:scale-110 sm:size-8 lg:size-10" />
+      ),
       title: "Highest Score",
-      value: category.state?.highestScore > 0 ? category.state?.highestScore : 0,
-      isLast: false
+      value:
+        category.state?.highestScore > 0 ? category.state?.highestScore : 0,
+      gradient: "from-emerald-500/20 to-emerald-900/20",
+      border: "border-emerald-500/30",
+      text: "text-emerald-400",
     },
     {
-      icon: <IoRibbonSharp className="mx-auto self-center text-2xl sm:text-3xl lg:text-4xl xl:text-5xl 2xl:text-7xl text-white" />,
+      icon: (
+        <IoRibbonSharp className="size-6 text-amber-400 transition-transform group-hover:scale-110 sm:size-8 lg:size-10" />
+      ),
       title: "Total Score",
       value: category.state?.totalScore || 0,
-      isLast: true
-    }
+      gradient: "from-amber-500/20 to-amber-900/20",
+      border: "border-amber-500/30",
+      text: "text-amber-400",
+    },
   ];
 
   return (
-    <div className="w-full max-w-6xl mx-auto">
-      {/* Desktop and Tablet View */}
-      <div className="hidden sm:flex border-primary min-h-[20dvh] w-full justify-evenly overflow-hidden rounded-lg border">
-        {statsData.map((stat, index) => (
-          <div 
-            key={index}
-            className={`border-primary flex w-full max-w-[35%] items-center justify-between gap-2 sm:gap-4 px-3 sm:px-6 lg:px-8 ${!stat.isLast ? 'border-r' : ''}`}
-          >
-            <div className="bg-primary size-12 sm:size-16 lg:size-20 xl:size-22 2xl:size-24 content-center rounded-full text-center flex-shrink-0">
-              {stat.icon}
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-xs sm:text-sm lg:text-base xl:text-lg 2xl:text-xl mb-1 sm:mb-2 text-gray-500 truncate">
-                {stat.title}
-              </p>
-              <p className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-extrabold truncate">
-                {typeof stat.value === 'number' ? stat.value.toLocaleString() : stat.value}
-              </p>
-            </div>
-          </div>
-        ))}
-      </div>
+    <div className="flex w-full flex-col gap-4 sm:gap-6">
+      {statsData.map((stat, index) => (
+        <div
+          key={index}
+          className={`group relative overflow-hidden rounded-[1.5rem] border ${stat.border} bg-slate-900/60 p-6 shadow-xl backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl`}
+        >
+          {/* Subtle gradient background */}
+          <div
+            className={`absolute inset-0 bg-gradient-to-br ${stat.gradient} opacity-50`}
+          />
 
-      {/* Mobile View - Stacked Cards */}
-      <div className="sm:hidden space-y-4">
-        {statsData.map((stat, index) => (
-          <div 
-            key={index}
-            className="border-primary flex items-center justify-between gap-4 p-4 rounded-lg border bg-white shadow-sm"
-          >
-            <div className="bg-primary size-14 content-center rounded-full text-center flex-shrink-0">
+          <div className="relative z-10 flex items-center gap-6">
+            <div
+              className={`flex items-center justify-center rounded-2xl border bg-slate-950 p-4 ${stat.border} shadow-inner`}
+            >
               {stat.icon}
             </div>
-            <div className="flex-1 text-right">
-              <p className="text-sm mb-1 text-gray-500">
+
+            <div className="flex flex-col gap-1">
+              <p className="text-xs font-bold uppercase tracking-widest text-slate-400 sm:text-sm">
                 {stat.title}
               </p>
-              <p className="text-2xl font-extrabold">
-                {typeof stat.value === 'number' ? stat.value.toLocaleString() : stat.value}
+              <p
+                className={`text-3xl font-black drop-shadow-md sm:text-4xl lg:text-5xl ${stat.text}`}
+              >
+                {typeof stat.value === "number"
+                  ? stat.value.toLocaleString()
+                  : stat.value}
               </p>
             </div>
           </div>
-        ))}
-      </div>
+        </div>
+      ))}
     </div>
   );
 }

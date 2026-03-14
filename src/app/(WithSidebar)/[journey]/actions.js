@@ -20,8 +20,6 @@ export const getTimeUp = () => {
   return timeup;
 };
 
-
-
 export const clearTimer = (endtime, setTimer, setGameEnd, Ref) => {
   if (Ref.current) clearInterval(Ref.current);
   setTimer("00:30");
@@ -41,8 +39,8 @@ export const startTimer = (endtime, setTimer, setGameEnd, Ref) => {
   } else {
     setTimer(
       (minutes > 9 ? minutes : "0" + minutes) +
-      ":" +
-      (seconds > 9 ? seconds : "0" + seconds),
+        ":" +
+        (seconds > 9 ? seconds : "0" + seconds),
     );
   }
 };
@@ -78,21 +76,45 @@ export const capitalize = (word, setCategory) => {
 
 export const getAllStoryFromCategory = async (category, setJourneyList) => {
   try {
+    // First test if the API is reachable
+    console.log("Testing API connection...");
+    const testRes = await fetch(`${BASE_URL}/api/test`, {
+      method: "GET",
+      cache: "no-store",
+      credentials: "include",
+    });
+
+    if (!testRes.ok) {
+      console.error("API test failed:", testRes.status, testRes.statusText);
+      alert("Server connection failed. Please check if the server is running.");
+      return;
+    }
+
+    console.log("API connection OK, fetching stories for category:", category);
+
+    // Now fetch the actual stories
     const res = await fetch(
       `${BASE_URL}/api/journey/collect?journey=${category}`,
       {
         method: "GET",
         cache: "no-store",
+        credentials: "include",
       },
     );
+
     if (!res.ok) {
-      alert();
-      // setLoading(false);
+      console.error("Failed to fetch stories:", res.status, res.statusText);
+      const errorText = await res.text();
+      console.error("Error response:", errorText);
+      alert(`Failed to load stories: ${res.status} ${res.statusText}`);
       return;
     }
-    const { data } = await res.json();
-    setJourneyList(data)
+
+    const result = await res.json();
+    console.log("Stories fetched successfully:", result);
+    setJourneyList(result.data || []);
   } catch (error) {
-    console.log(error)
+    console.error("Error fetching stories:", error);
+    alert(`Network error: ${error.message}. Please check your connection.`);
   }
 };

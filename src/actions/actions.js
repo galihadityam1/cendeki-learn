@@ -48,11 +48,6 @@ export async function editProfile({ fullname, bio }) {
   if (!res.ok) {
     return "Failed";
   }
-  const result = await res.json();
+  await res.json();
   return redirect("/profile/details");
 }
-
-export async function callAction() {
-  return await getStory(params.journey);
-}
-

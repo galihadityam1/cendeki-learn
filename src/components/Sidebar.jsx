@@ -10,6 +10,7 @@ import { BiCategory } from "react-icons/bi";
 import { IoIosBookmarks } from "react-icons/io";
 import { MdOutlineBarChart } from "react-icons/md";
 import { HiMenu, HiX } from "react-icons/hi";
+import { FiLogOut } from "react-icons/fi";
 
 export default function Sidebar() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Default closed on mobile
@@ -30,8 +31,8 @@ export default function Sidebar() {
     };
 
     checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
   async function logout() {
@@ -42,6 +43,8 @@ export default function Sidebar() {
         showConfirmButton: false,
         timer: 1500,
         icon: "warning",
+        background: "#0f172a",
+        color: "#f8fafc",
       });
     }
     cookies.remove("Authorization", { path: "/" });
@@ -65,8 +68,8 @@ export default function Sidebar() {
     <>
       {/* Mobile overlay */}
       {isMobile && isSidebarOpen && (
-        <div 
-          className="fixed inset-0 bg-black bg-opacity-50 z-[9998] md:hidden"
+        <div
+          className="fixed inset-0 z-[9998] bg-slate-950/80 backdrop-blur-sm transition-opacity duration-300 md:hidden"
           onClick={closeSidebar}
         />
       )}
@@ -74,7 +77,7 @@ export default function Sidebar() {
       {/* Mobile toggle button */}
       <button
         onClick={toggleSidebar}
-        className="fixed top-4 left-4 z-[9999] p-2 bg-sky-200 rounded-md shadow-md md:hidden hover:bg-sky-300 transition-colors"
+        className="fixed left-4 top-4 z-[9999] rounded-xl border border-slate-800 bg-slate-900 p-2.5 text-slate-300 shadow-lg transition-all duration-300 hover:bg-slate-800 hover:text-white md:hidden"
       >
         {isSidebarOpen ? <HiX size={20} /> : <HiMenu size={20} />}
       </button>
@@ -82,45 +85,54 @@ export default function Sidebar() {
       {/* Sidebar */}
       <div
         className={`
-          fixed top-0 left-0 h-screen bg-white shadow-lg shadow-blue-600
-          transition-transform duration-300 ease-in-out
-          ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
-          ${isMobile ? 'w-80 z-[9999]' : 'w-64 md:w-72 lg:w-80 z-10'}
+          fixed left-0 top-0 h-screen border-r border-slate-800 bg-slate-950
+          transition-all duration-300 ease-in-out
+          ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}
+          ${isMobile ? "z-[9999] w-80 shadow-2xl" : "z-40 w-72 lg:w-80"}
           flex flex-col justify-between
         `}
       >
-        <div className="flex flex-col items-center overflow-y-auto">
+        {/* Subtle background glow */}
+        <div className="pointer-events-none absolute left-0 top-0 h-64 w-full bg-gradient-to-b from-sky-500/5 to-transparent" />
+
+        <div className="hide-scrollbar relative z-10 flex h-full flex-col overflow-y-auto">
           {/* Logo section */}
-          <Link 
-            href="/" 
-            className="my-6 mb-8 flex items-center justify-center px-4"
+          <Link
+            href="/"
+            className="group mb-10 mt-8 flex items-center justify-center px-6"
             onClick={closeSidebar}
           >
-            <img src="/logo.png" alt="Logo" className="w-10 h-10 sm:w-12 sm:h-12" />
-            <h2 className="text-primary text-xl sm:text-2xl font-extrabold ml-2">
+            <div className="relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl shadow-lg shadow-sky-500/20 transition-transform group-hover:scale-105 sm:h-12 sm:w-12">
+              <img
+                src="/logo.png"
+                alt="Cendekia Logo"
+                className="h-full w-full object-cover"
+              />
+            </div>
+            <h2 className="ml-3 text-xl font-bold tracking-tight text-white transition-colors group-hover:text-sky-300 sm:text-2xl">
               Cendekia
             </h2>
           </Link>
 
           {/* Menu label */}
-          <p className="mb-4 px-4 text-gray-500 text-sm font-medium self-start">
-            Menu
+          <p className="mb-4 px-8 text-xs font-bold uppercase tracking-widest text-slate-500">
+            Main Menu
           </p>
 
           {/* Menu items */}
-          <div className="mx-auto mb-8 flex w-full max-w-[90%] flex-col gap-2">
+          <div className="mb-8 flex w-full flex-col gap-2 px-4">
             {menus.map((el, idx) => {
               return (
                 <Link
                   href={el.href}
                   key={idx}
-                  className="flex items-center gap-3 rounded-lg px-4 py-3 hover:bg-sky-100 transition-colors group"
+                  className="group flex items-center gap-4 rounded-xl border border-transparent px-4 py-3.5 text-slate-400 transition-all duration-300 hover:border-slate-800/50 hover:bg-slate-900 hover:text-white"
                   onClick={closeSidebar}
                 >
-                  <span className="text-gray-600 group-hover:text-sky-600 transition-colors">
+                  <span className="rounded-lg bg-slate-900 p-2 transition-colors group-hover:bg-sky-500/20 group-hover:text-sky-400">
                     {el.icon}
                   </span>
-                  <p className="text-base font-medium text-gray-700 group-hover:text-sky-700 transition-colors">
+                  <p className="text-sm font-semibold tracking-wide">
                     {el.name}
                   </p>
                 </Link>
@@ -128,26 +140,28 @@ export default function Sidebar() {
             })}
           </div>
         </div>
-        
+
         {/* Profile section */}
-        <div className="flex flex-col gap-3 px-4 py-4 border-t border-gray-200 mt-auto">
-          <p className="text-sm font-medium text-gray-500">Profile</p>
-          
-          <Link 
-            href="/profile/details" 
-            className="flex items-center gap-3 p-2 rounded-lg hover:bg-sky-50 transition-colors"
+        <div className="relative z-10 mt-auto flex flex-col border-t border-slate-800/50 bg-slate-950 px-4 py-6">
+          <p className="mb-4 px-4 text-xs font-bold uppercase tracking-widest text-slate-500">
+            Account
+          </p>
+
+          <Link
+            href="/profile/details"
+            className="group flex items-center gap-3 rounded-xl border border-transparent p-3 transition-all duration-300 hover:border-slate-800/50 hover:bg-slate-900"
             onClick={closeSidebar}
           >
             <img
               src="https://images.pexels.com/photos/279360/pexels-photo-279360.jpeg"
-              className="w-10 h-10 rounded-full object-cover flex-shrink-0"
+              className="h-10 w-10 flex-shrink-0 rounded-full border-2 border-slate-700 object-cover transition-colors group-hover:border-sky-500"
               alt="Profile"
             />
-            <div className="flex-1 min-w-0">
-              <p className="font-semibold text-gray-800 truncate">
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-sm font-bold text-white transition-colors group-hover:text-sky-300">
                 {dataProfile?.state?.fullname || "User"}
               </p>
-              <p className="text-sm text-gray-500 truncate">
+              <p className="truncate text-xs font-medium text-slate-500">
                 {dataProfile?.state?.email || "user@email.com"}
               </p>
             </div>
@@ -158,22 +172,25 @@ export default function Sidebar() {
               logout();
               closeSidebar();
             }}
-            className="mt-2 rounded-lg bg-sky-200 py-2.5 px-4 text-center font-semibold text-sky-800 hover:bg-sky-300 transition-colors"
+            className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl border border-rose-500/20 bg-rose-500/10 px-4 py-3 text-sm font-bold text-rose-400 transition-all duration-300 hover:bg-rose-500 hover:text-white"
           >
-            Log out
+            <FiLogOut size={16} />
+            <span>Log out</span>
           </button>
         </div>
       </div>
 
       {/* Spacer for desktop layout only when sidebar is open */}
-      <div className={`hidden md:block transition-all duration-300 ${isSidebarOpen ? 'w-64 md:w-72 lg:w-80' : 'w-0'} flex-shrink-0`} />
+      <div
+        className={`hidden transition-all duration-300 md:block ${isSidebarOpen ? "w-72 lg:w-80" : "w-0"} flex-shrink-0`}
+      />
     </>
   );
 }
 
 const menus = [
   {
-    name: "Category",
+    name: "Categories",
     icon: <BiCategory size={20} />,
     href: "/lobby",
   },

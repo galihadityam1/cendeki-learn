@@ -5,6 +5,7 @@ import Swal from "sweetalert2";
 import CompleteJourney from "@/components/CompleteJourney";
 import IncompleteJourney from "@/components/IncompleteJourney";
 import LoadingSkeleton from "@/components/LoadingSkeleton";
+import { SparklesCore } from "@/components/ui/sparkles";
 import {
   capitalize,
   clearTimer,
@@ -37,7 +38,7 @@ export default function Page({ params }) {
   const [finalScore, setFinalScore] = useState(0);
   const [gameEnd, setGameEnd] = useState(false);
   const [timer, setTimer] = useState("00:30");
-  const [title, setTitle] = useState("");
+const [title, setTitle] = useState("");
 
   const onClickStart = () => {
     clearTimer(getTimeUp(), setTimer, setGameEnd, Ref);
@@ -58,6 +59,8 @@ export default function Page({ params }) {
         denyButtonColor: "#14b8a6",
         confirmButtonText: "Yes",
         denyButtonText: "No",
+        background: "#0f172a",
+        color: "#f8fafc",
       }).then((result) => {
         if (result.isConfirmed) {
           setDisplayComplete(true);
@@ -132,80 +135,113 @@ export default function Page({ params }) {
   }
 
   return (
-    <div className="mx-auto min-h-screen w-full overflow-x-hidden">
-      {/* Header Section */}
-      <div className="mx-auto mb-4 mt-4 flex max-w-[95%] flex-col gap-4 px-4 sm:mb-6 sm:mt-6 sm:max-w-[90%] sm:gap-6 sm:px-0 md:mb-8 md:mt-8 md:max-w-[80%] md:gap-8 lg:max-w-[60%]">
-        <h1 className="text-center text-2xl font-bold leading-tight sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl 2xl:text-8xl">
-          Test Your Knowledge
-        </h1>
-        <h2 className="mx-auto text-center text-lg font-bold sm:text-xl md:text-2xl lg:text-3xl">
-          Subject: {category}
-        </h2>
+    <div className="relative mx-auto min-h-screen w-full overflow-hidden bg-slate-950 text-slate-100">
+      {/* Background Sparkles */}
+      <div className="absolute inset-0 z-0 h-screen w-full">
+        <SparklesCore
+          id="tsparticlesfullpage"
+          background="transparent"
+          minSize={0.6}
+          maxSize={1.4}
+          particleDensity={100}
+          className="h-full w-full"
+          particleColor="#38bdf8"
+        />
+        <div className="absolute inset-0 bg-slate-950 [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]" />
       </div>
 
-      {/* Journey Cards Grid */}
-      <div className="mb-6 w-full px-3 sm:mb-8 sm:px-4 md:mb-10 md:px-6 lg:px-8">
-        <div className="mx-auto grid max-w-7xl grid-cols-1 place-items-center gap-3 sm:grid-cols-2 sm:gap-4 md:gap-6 lg:grid-cols-3 2xl:grid-cols-4">
-          {journeyList.length != 0 &&
-            journeyList.map((el, idx) => {
-              return (
-                <JourneyCard
-                  key={idx}
-                  el={el}
-                  setJourneyList={setJourneyList}
-                  setGenerating={setGenerating}
-                  setLoading={setLoading}
-                  setStoryId={setStoryId}
-                  setJourney={setJourney}
-                  setCorrectAnswers={setCorrectAnswers}
-                  setAnswers={setAnswers}
-                  setScores={setScores}
-                  setTitle={setTitle}
-                />
-              );
-            })}
+      {/* Main Content */}
+      <div className="relative z-10 flex flex-col pb-24 pt-12">
+        {/* Header Section */}
+        <div className="mx-auto mb-12 flex w-full max-w-4xl flex-col items-center justify-center gap-6 px-4 text-center sm:px-6">
+          <div className="inline-flex items-center justify-center rounded-full border border-slate-700 bg-slate-800/50 px-4 py-1.5 backdrop-blur-md">
+            <span className="bg-gradient-to-r from-sky-400 to-indigo-400 bg-clip-text text-sm font-semibold uppercase tracking-wider text-transparent">
+              {category} Challenge
+            </span>
+          </div>
+          <h1 className="bg-gradient-to-br from-white to-slate-400 bg-clip-text text-4xl font-extrabold tracking-tight text-transparent sm:text-5xl md:text-6xl lg:text-7xl">
+            Test Your Knowledge
+          </h1>
+          <p className="max-w-2xl text-lg text-slate-400 sm:text-xl">
+            Select a topic below to begin your learning adventure. Answer
+            questions correctly and beat the clock to maximize your score.
+          </p>
         </div>
+
+        {/* Journey Cards Grid */}
+        <div className="w-full px-4 sm:px-6 md:px-8">
+          <div className="mx-auto grid max-w-7xl grid-cols-1 place-items-center gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {journeyList.length != 0 &&
+              journeyList.map((el, idx) => {
+                return (
+                  <div
+                    key={idx}
+                    className="w-full transform transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-sky-500/20"
+                  >
+                    <JourneyCard
+                      el={el}
+                      setJourneyList={setJourneyList}
+                      setGenerating={setGenerating}
+                      setLoading={setLoading}
+                      setStoryId={setStoryId}
+                      setJourney={setJourney}
+                      setCorrectAnswers={setCorrectAnswers}
+                      setAnswers={setAnswers}
+                      setScores={setScores}
+                      setTitle={setTitle}
+                    />
+                  </div>
+                );
+              })}
+          </div>
+        </div>
+
+        {/* Loading State */}
+        {generating && (
+          <div className="mx-auto w-full max-w-4xl px-4 pt-12 sm:px-6 md:px-8">
+            <div className="rounded-2xl border border-slate-800 bg-slate-900/50 p-6 backdrop-blur-sm">
+              <LoadingSkeleton />
+            </div>
+          </div>
+        )}
+
+        {/* Game Content */}
+        {!loading && !displayComplete && (
+          <div className="mx-auto w-full max-w-5xl px-4 pt-8 sm:px-6 md:px-8">
+            <div className="rounded-3xl border border-slate-800 bg-slate-900/80 p-6 shadow-2xl backdrop-blur-xl sm:p-8 md:p-10">
+              <IncompleteJourney
+                feedback={feedback}
+                title={title}
+                journey={journey}
+                answers={answers}
+                border={border}
+                scores={scores}
+                timer={timer}
+                finalScore={finalScore}
+                setAnswers={setAnswers}
+                onClickStart={onClickStart}
+                handleSubmit={handleSubmit}
+                gameStart={gameStart}
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Complete Journey */}
+        {displayComplete && (
+          <div className="mx-auto w-full max-w-5xl px-4 pt-8 sm:px-6 md:px-8">
+            <div className="rounded-3xl border border-slate-800 bg-slate-900/80 p-6 shadow-2xl backdrop-blur-xl sm:p-8 md:p-10">
+              <CompleteJourney
+                journey={journey}
+                correctAnswers={correctAnswers}
+                title={title}
+                finalScore={finalScore}
+                timer={timer}
+              />
+            </div>
+          </div>
+        )}
       </div>
-
-      {/* Loading State */}
-      {generating && (
-        <div className="px-4 sm:px-6 md:px-8">
-          <LoadingSkeleton />
-        </div>
-      )}
-
-      {/* Game Content */}
-      {!loading && !displayComplete && (
-        <div className="px-4 sm:px-6 md:px-8">
-          <IncompleteJourney
-            feedback={feedback}
-            title={title}
-            journey={journey}
-            answers={answers}
-            border={border}
-            scores={scores}
-            timer={timer}
-            finalScore={finalScore}
-            setAnswers={setAnswers}
-            onClickStart={onClickStart}
-            handleSubmit={handleSubmit}
-            gameStart={gameStart}
-          />
-        </div>
-      )}
-
-      {/* Complete Journey */}
-      {displayComplete && (
-        <div className="px-4 sm:px-6 md:px-8">
-          <CompleteJourney
-            journey={journey}
-            correctAnswers={correctAnswers}
-            title={title}
-            finalScore={finalScore}
-            timer={timer}
-          />
-        </div>
-      )}
     </div>
   );
 }

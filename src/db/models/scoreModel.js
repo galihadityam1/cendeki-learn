@@ -3,19 +3,15 @@ import { getCollection } from "../config/mongodb";
 import { z } from "zod";
 
 export class ScoreModel {
-  static collection() {
-    return getCollection("Scores");
-  }
-
-  static async getScoreById(_id) {
-    const result = await this.collection().find({ id: _id });
-    return result;
+  static async collection() {
+    return await getCollection("Scores");
   }
 
   static async addScore({ userId, score, storyId, playDate }) {
     const idUser = new ObjectId(String(userId));
     const idStory = new ObjectId(String(storyId));
-    return await this.collection().insertOne({
+    const collection = await this.collection();
+    return await collection.insertOne({
       storyId: idStory,
       userId: idUser,
       score,
@@ -24,7 +20,14 @@ export class ScoreModel {
   }
 
   static async getScoreById(_id) {
-    const result = await this.collection().findOne({ _id });
+    const collection = await this.collection();
+    const result = await collection.findOne({ _id });
+    return result;
+  }
+
+  static async getScoresByUserId(userId) {
+    const collection = await this.collection();
+    const result = await collection.find({ userId }).toArray();
     return result;
   }
 
@@ -63,13 +66,14 @@ export class ScoreModel {
       },
       {
         $sort: {
-          totalScore: -1
-        }
-      }
+          totalScore: -1,
+        },
+      },
     ];
 
-    const cursor = this.collection().aggregate(agg);
+    const collection = await this.collection();
+    const cursor = collection.aggregate(agg);
     const result = await cursor.toArray();
-    return result
+    return result;
   }
 }
