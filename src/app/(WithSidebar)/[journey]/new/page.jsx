@@ -8,10 +8,12 @@ import CompleteJourney from "@/components/CompleteJourney";
 import IncompleteJourney from "@/components/IncompleteJourney";
 import LoadingSkeleton from "@/components/LoadingSkeleton";
 import { capitalize, clearTimer, getTimeUp, postScore } from "../actions";
-import { OPENROUTER_API_KEY } from "@/db/config/constant";
+import { SparklesCore } from "@/components/ui/sparkles";
+import { useAppContext } from "@/context";
 
 export default function Page({ params }) {
   const Ref = useRef(null);
+  const { state } = useAppContext();
   const [journey, setJourney] = useState({
     title: "",
     fullStory: "",
@@ -36,7 +38,7 @@ export default function Page({ params }) {
   const [title, setTitle] = useState("");
 
   const generatePrompt = async (e) => {
-    if (e.key === "Enter" || e.type == "click") {
+    if ((e.key === "Enter" || e.type == "click") && !generating) {
       setGenerating(true);
       setLoading(true);
       setQuestion("");
@@ -82,7 +84,13 @@ export default function Page({ params }) {
         const errorData = await res.text();
         console.error("API Error Response:", errorData);
         console.error("Status:", res.status);
-        alert("Failed to generate content. Please try again.");
+        Swal.fire({
+          title: "Error",
+          text: "Failed to generate content. Please try again.",
+          icon: "error",
+          background: "#0f172a",
+          color: "#f8fafc",
+        });
         setLoading(false);
         setGenerating(false);
         return;
@@ -111,16 +119,21 @@ export default function Page({ params }) {
 
   useEffect(() => {
     if (gameEnd) {
-      postScore(finalScore, storyId);
+      postScore(finalScore, storyId, state?._id);
       Swal.fire({
         title: "Time's up!",
-        html: `<p class='leading-loose'>Your final score is ${finalScore} <br /> Do you want to see the correct answer ?</p>`,
+        html: `<p class='text-slate-300 leading-loose'>Your final score is <span class="text-sky-400 font-bold">${finalScore}</span> <br /> Do you want to see the correct answers?</p>`,
         icon: "info",
         showDenyButton: true,
-        confirmButtonColor: "#1860b6",
-        denyButtonColor: "#14b8a6",
-        confirmButtonText: "Yes",
-        denyButtonText: "No",
+        confirmButtonColor: "#0ea5e9", // sky-500
+        denyButtonColor: "#334155", // slate-700
+        confirmButtonText: "Yes, show answers",
+        denyButtonText: "No, back to leaderboard",
+        background: "#0f172a", // slate-950
+        color: "#f8fafc", // slate-50
+        customClass: {
+          popup: "border border-slate-800 rounded-2xl",
+        },
       }).then((result) => {
         if (result.isConfirmed) {
           setDisplayComplete(true);
@@ -160,9 +173,11 @@ export default function Page({ params }) {
 
           let borderClass = "";
           if (res === "Correct") {
-            borderClass = "correct-answer";
+            borderClass =
+              "correct-answer bg-emerald-500/10 border-emerald-500/50 text-emerald-400";
           } else if (res === "Incorrect" && answer && answer.length !== 0) {
-            borderClass = "border-b-2 border-rose-400";
+            borderClass =
+              "border-b-2 border-rose-500 bg-rose-500/10 text-rose-400";
           }
           updatedBorder[idx] = borderClass;
 
@@ -183,50 +198,81 @@ export default function Page({ params }) {
   );
 
   return (
-    <>
-      <div className="mx-auto">
-        <div className="mx-auto mb-8 mt-8 flex max-w-[80dvw] flex-col gap-8 md:max-w-[60dvw]">
-          <h1 className="text-center text-4xl font-bold md:text-7xl 2xl:text-8xl">
+    <div className="relative min-h-screen w-full overflow-hidden bg-slate-950 px-4 py-12 text-slate-100 sm:px-6 lg:px-8">
+      {/* Background Sparkles */}
+      <div className="pointer-events-none absolute inset-0 z-0 h-screen w-full">
+        <SparklesCore
+          id="tsparticlesjourney"
+          background="transparent"
+          minSize={0.6}
+          maxSize={1.4}
+          particleDensity={30}
+          className="h-full w-full"
+          particleColor="#38bdf8"
+        />
+        <div className="absolute inset-0 bg-slate-950 [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]" />
+        <div className="absolute -left-1/4 top-1/4 h-1/2 w-1/2 rounded-full bg-sky-500/5 blur-[120px]" />
+        <div className="absolute -right-1/4 bottom-1/4 h-1/2 w-1/2 rounded-full bg-indigo-500/5 blur-[120px]" />
+      </div>
+
+      <div className="relative z-10 mx-auto max-w-5xl pt-8">
+        <div className="mb-12 flex flex-col items-center gap-4 text-center">
+          <div className="inline-flex items-center rounded-full border border-sky-400/30 bg-sky-500/10 px-4 py-1.5 backdrop-blur-md">
+            <span className="text-xs font-bold uppercase tracking-widest text-sky-400">
+              Interactive Story
+            </span>
+          </div>
+          <h1 className="bg-gradient-to-br from-white to-slate-400 bg-clip-text text-4xl font-extrabold tracking-tight text-transparent sm:text-5xl md:text-6xl">
             Test Your Knowledge
           </h1>
         </div>
-        <div className="mb-10 flex w-full flex-col items-center justify-center gap-2">
+
+        <div className="relative z-20 mb-12 flex w-full flex-col items-center justify-center gap-6">
           {category && (
             <PromptAPI
               setQuestion={setQuestion}
               category={category}
               generatePrompt={generatePrompt}
+              generating={generating}
             />
           )}
         </div>
 
-        {generating && <LoadingSkeleton />}
-        {!loading && !displayComplete && (
-          <IncompleteJourney
-            feedback={feedback}
-            title={title}
-            journey={journey}
-            answers={answers}
-            border={border}
-            scores={scores}
-            timer={timer}
-            finalScore={finalScore}
-            setAnswers={setAnswers}
-            onClickStart={onClickStart}
-            handleSubmit={handleSubmit}
-            gameStart={gameStart}
-          />
-        )}
-        {displayComplete && (
-          <CompleteJourney
-            journey={journey}
-            correctAnswers={correctAnswers}
-            title={title}
-            finalScore={finalScore}
-            timer={timer}
-          />
-        )}
+        <div className="relative z-10">
+          {generating && <LoadingSkeleton />}
+
+          {!loading && !displayComplete && (
+            <div className="rounded-[2rem] border border-slate-800/60 bg-slate-900/60 p-6 shadow-2xl backdrop-blur-xl sm:p-10">
+              <IncompleteJourney
+                feedback={feedback}
+                title={title}
+                journey={journey}
+                answers={answers}
+                border={border}
+                scores={scores}
+                timer={timer}
+                finalScore={finalScore}
+                setAnswers={setAnswers}
+                onClickStart={onClickStart}
+                handleSubmit={handleSubmit}
+                gameStart={gameStart}
+              />
+            </div>
+          )}
+
+          {displayComplete && (
+            <div className="rounded-[2rem] border border-slate-800/60 bg-slate-900/60 p-6 shadow-2xl backdrop-blur-xl sm:p-10">
+              <CompleteJourney
+                journey={journey}
+                correctAnswers={correctAnswers}
+                title={title}
+                finalScore={finalScore}
+                timer={timer}
+              />
+            </div>
+          )}
+        </div>
       </div>
-    </>
+    </div>
   );
 }

@@ -1,32 +1,36 @@
-"use client"
-import { editProfile, profile } from "@/actions/actions"
-import { createContext, useContext, useEffect, useState } from "react"
+"use client";
+import { editProfile, profile } from "@/actions/actions";
+import { createContext, useContext, useEffect, useState } from "react";
 
+const AppContext = createContext();
 
+export function AppWrapper({ children }) {
+  const [state, setState] = useState({});
+  const [story, setStory] = useState({});
 
-const AppContext = createContext()
+  async function getProfile() {
+    let res = await profile();
+    setState(res);
+  }
 
+  useEffect(() => {
+    getProfile();
+  }, []);
 
-export function AppWrapper({children}){
-    const [state, setState] = useState({})
-    const [story, setStory] = useState({})
+  // Function to refresh profile data
+  const refreshProfile = async () => {
+    await getProfile();
+  };
 
-    async function getProfile(){
-        let res = await profile()
-        setState(res)
-      }
-
-    useEffect(() => {
-        getProfile()
-      },[editProfile])
-
-    return (
-        <AppContext.Provider value={{state, getProfile, story, setStory}}>
-            {children}
-        </AppContext.Provider>
-    )
+  return (
+    <AppContext.Provider
+      value={{ state, getProfile, refreshProfile, story, setStory }}
+    >
+      {children}
+    </AppContext.Provider>
+  );
 }
 
-export function useAppContext(){
-    return useContext(AppContext)
+export function useAppContext() {
+  return useContext(AppContext);
 }

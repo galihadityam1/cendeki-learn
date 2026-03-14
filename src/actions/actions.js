@@ -34,11 +34,11 @@ export async function getStory(params) {
   return result.story[0];
 }
 
-export async function editProfile({ fullname, bio }) {
+export async function editProfile({ fullname, bio, age }) {
   let res = await fetch(`${BASE_URL}/api/profile`, {
     method: "PATCH",
     cache: "no-store",
-    body: JSON.stringify({ fullname, bio }),
+    body: JSON.stringify({ fullname, bio, age }),
     headers: {
       "Content-Type": "application/json",
       Cookie: cookies().toString(),
@@ -48,11 +48,7 @@ export async function editProfile({ fullname, bio }) {
   if (!res.ok) {
     return "Failed";
   }
-  const result = await res.json();
+  await res.json();
   return redirect("/profile/details");
-}
-
-export async function callAction() {
-  return await getStory(params.journey);
 }
 

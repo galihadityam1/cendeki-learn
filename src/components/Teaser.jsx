@@ -29,7 +29,7 @@ export default function Teaser({ animationData }) {
     ],
   };
 
-  const [answers, setAnswers] = useState(Array(journey.answer.length));
+  const [answers, setAnswers] = useState(Array(journey.answer.length).fill(""));
   const [feedback, setFeedback] = useState(
     Array(journey.answer.length).fill(""),
   );
@@ -43,7 +43,6 @@ export default function Teaser({ animationData }) {
   }, [scores]);
 
   function handleSubmit(e) {
-    // e.preventDefault();
     if (e.key == "Enter") {
       const newFeedback = answers.map((answer, idx) => {
         const res =
@@ -60,9 +59,9 @@ export default function Teaser({ animationData }) {
 
         let borderClass = "";
         if (res === "Correct") {
-          borderClass = "border-b-2 border-teal-400 placeholder:invert";
+          borderClass = "border-sky-500 bg-sky-500/10 text-sky-300";
         } else if (res == "Incorrect" && answer && answer.length !== 0) {
-          borderClass = "border-b-2 border-rose-400 placeholder:invert";
+          borderClass = "border-rose-500 bg-rose-500/10 text-rose-300";
         } else {
           borderClass = "";
         }
@@ -95,12 +94,12 @@ export default function Teaser({ animationData }) {
     if (idx !== journey.story.split("----").length - 1) {
       return (
         <React.Fragment key={idx}>
-          <span className="">{question}</span>
-          <span className="relative inline-block">
+          <span className="text-slate-300">{question}</span>
+          <span className="relative mx-1 inline-block align-middle">
             <input
               type="text"
-              placeholder={idx === 0 ? journey.answer[0] : "- - - -"}
-              value={answers[idx]}
+              placeholder={idx === 0 ? journey.answer[0] : ""}
+              value={answers[idx] || ""}
               onKeyDown={handleSubmit}
               onChange={(e) => {
                 const newAnswers = [...answers];
@@ -108,24 +107,24 @@ export default function Teaser({ animationData }) {
                 setAnswers(newAnswers);
               }}
               className={
-                "inline h-6 w-20 max-w-fit rounded-full border-b-2 border-sky-400 px-2 text-xs sm:w-24 sm:px-3 sm:text-sm md:w-32 lg:w-40 " +
-                (border[idx] !== "" ? border[idx] : " bg-opacity-70")
+                "inline-block h-8 w-24 rounded-lg border border-slate-600 bg-slate-800/50 px-2 text-center text-sm font-semibold text-white outline-none transition-all placeholder:text-slate-500 focus:border-sky-400 focus:bg-slate-800 focus:ring-1 focus:ring-sky-400/50 sm:w-28 sm:text-base md:w-32 " +
+                (border[idx] !== "" ? border[idx] : "")
               }
             />
             {feedback[idx] == "Correct" && (
-              <div className="absolute -right-1 top-1 flex items-center gap-1 sm:right-3">
-                <span className="text-xs font-bold text-cyan-500 sm:text-sm">
+              <div className="absolute -right-2 -top-3 flex items-center gap-1">
+                <span className="text-xs font-bold text-sky-400 drop-shadow-md">
                   +{scores[idx]}
                 </span>
-                <FaCircleCheck className="size-3 text-cyan-500 sm:size-4" />
+                <FaCircleCheck className="size-4 text-sky-400 drop-shadow-md" />
               </div>
             )}
-            {border[idx] == "border-b-2 border-rose-400 placeholder:invert" && (
-              <div className="absolute -right-1 top-1 flex items-center gap-1 sm:right-3">
-                <span className="text-xs font-bold text-rose-500 sm:text-sm">
+            {border[idx] == "border-rose-500 bg-rose-500/10 text-rose-300" && (
+              <div className="absolute -right-2 -top-3 flex items-center gap-1">
+                <span className="text-xs font-bold text-rose-500 drop-shadow-md">
                   {scores[idx]}
                 </span>
-                <FaCircleXmark className="size-3 text-rose-500 sm:size-4" />
+                <FaCircleXmark className="size-4 text-rose-500 drop-shadow-md" />
               </div>
             )}
           </span>
@@ -133,7 +132,7 @@ export default function Teaser({ animationData }) {
       );
     } else {
       return (
-        <span className="invert" key={idx}>
+        <span className="text-slate-300" key={idx}>
           {question}
         </span>
       );
@@ -141,38 +140,60 @@ export default function Teaser({ animationData }) {
   });
 
   return (
-    <>
-      <div
-        id="teaser"
-        className="mx-auto mt-16 flex max-w-[95dvw] flex-col gap-4 px-4 sm:mt-24 sm:max-w-[90dvw] sm:gap-6 sm:px-0 md:mt-32 md:max-w-[80dvw] md:gap-8 lg:max-w-[60dvw]"
-      >
-        <h1 className="text-center text-3xl font-bold sm:text-4xl md:text-6xl lg:text-8xl">
+    <div
+      id="teaser"
+      className="relative mx-auto mt-16 flex w-full max-w-7xl flex-col items-center px-4 sm:mt-24 sm:px-6 md:mt-32 md:px-8"
+    >
+      <div className="mb-12 flex flex-col gap-4 text-center">
+        <h2 className="bg-gradient-to-br from-white to-slate-400 bg-clip-text text-4xl font-extrabold tracking-tight text-transparent sm:text-5xl md:text-6xl lg:text-7xl">
           Test Your Knowledge
-        </h1>
-        <p className="text-center text-sm sm:text-base md:text-lg">
-          {/* Demo the learning game we have. */}
+        </h2>
+        <p className="mx-auto max-w-2xl text-base text-slate-400 sm:text-lg">
+          Try a demo of our interactive learning experience. Read the story and
+          fill in the blanks to test your comprehension. Press Enter to check
+          your answers.
         </p>
       </div>
-      <div className="border-primary mx-auto mt-8 max-w-[95dvw] rounded-lg border p-3 sm:mt-12 sm:max-w-[90dvw] sm:p-4 md:mt-16 md:max-w-[80dvw] md:p-6 lg:max-w-[60dvw]">
-        <div className="flex flex-col justify-center gap-1">
-          <h2 className="text-lg font-bold sm:text-xl md:text-2xl">
+
+      <div className="relative w-full max-w-4xl overflow-hidden rounded-[2rem] border border-slate-700/50 bg-slate-900/80 p-6 shadow-2xl backdrop-blur-xl sm:p-8 md:p-12">
+        <div className="absolute -right-40 -top-40 h-80 w-80 rounded-full bg-sky-500/10 blur-[100px]" />
+
+        <div className="relative z-10 flex flex-col gap-2 border-b border-slate-700/50 pb-6">
+          <div className="inline-flex items-center gap-2">
+            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-sky-500/20 text-xs font-bold text-sky-400">
+              1
+            </span>
+            <span className="text-sm font-semibold uppercase tracking-wider text-slate-400">
+              History Demo
+            </span>
+          </div>
+          <h3 className="text-2xl font-bold text-white sm:text-3xl">
             Indonesian Independence
-          </h2>
-          <p className="text-sm sm:text-base">
-            Fill the missing blank down below
-          </p>
+          </h3>
         </div>
-        <div className="border-primary mt-4 rounded-lg border">
-          <p className="p-3 text-justify indent-4 text-sm leading-relaxed tracking-tight sm:p-4 sm:indent-6 sm:text-base sm:leading-loose md:p-6 md:indent-10 md:text-lg">
-            {questions}
-          </p>
-          <div className="bg-primary flex w-full">
-            <p className="px-3 py-2 text-sm font-bold text-white sm:px-4 sm:text-base">
-              Score: {finalScore}
+
+        <div className="relative z-10 mt-6">
+          <div className="rounded-2xl border border-slate-700/50 bg-slate-950/50 p-6 shadow-inner sm:p-8 md:p-10">
+            <p className="text-justify text-base leading-loose tracking-wide text-slate-300 sm:text-lg sm:leading-loose md:text-xl md:leading-relaxed">
+              {questions}
             </p>
+          </div>
+
+          <div className="mt-6 flex items-center justify-between rounded-2xl border border-sky-500/30 bg-sky-500/10 px-6 py-4 backdrop-blur-sm sm:px-8">
+            <p className="text-lg font-bold text-white sm:text-xl">
+              Total Score
+            </p>
+            <div className="flex items-center gap-3">
+              <span className="text-3xl font-black text-sky-400 sm:text-4xl">
+                {finalScore}
+              </span>
+              <span className="mt-2 text-sm font-medium text-slate-400">
+                / {journey.answer.length * 100}
+              </span>
+            </div>
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }

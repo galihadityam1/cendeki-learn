@@ -1,6 +1,8 @@
 import React, { useMemo, useCallback } from "react";
 import { CorrectFeedback, IncorrectFeedback } from "./Feedback";
 import JourneyTitle from "./JourneyTitle";
+import { FiPlay } from "react-icons/fi";
+import { cn } from "@/utils/cn";
 
 export default function IncompleteJourney({
   journey,
@@ -19,19 +21,31 @@ export default function IncompleteJourney({
   const questions = useMemo(() => {
     if (!journey) return [];
 
-    const parts = journey.split(/___\d+___/);
-    const blanks = journey.match(/___\d+___/g) || [];
+    // Handle both formats: ___1___ and ----
+    const hasNumberedBlanks = /___\d+___/.test(journey);
+
+    let parts, blanks;
+
+    if (hasNumberedBlanks) {
+      // Format: ___1___, ___2___, etc.
+      parts = journey.split(/___\d+___/);
+      blanks = journey.match(/___\d+___/g) || [];
+    } else {
+      // Format: ---- (multiple dashes)
+      parts = journey.split(/----+/);
+      blanks = journey.match(/----+/g) || [];
+    }
 
     return parts.map((part, idx) => {
       if (idx < blanks.length) {
         return (
           <React.Fragment key={idx}>
-            <span className="">{part}</span>
-            <span className="relative font-bold italic">
+            <span className="leading-loose text-slate-300">{part}</span>
+            <span className="relative mx-1 inline-flex items-center font-bold">
               <input
                 type="text"
                 disabled={!gameStart}
-                placeholder="- - - -"
+                placeholder={gameStart ? "Type here..." : "Start to play"}
                 value={answers[idx] || ""}
                 onKeyDown={handleSubmit}
                 onChange={(e) => {
@@ -39,23 +53,32 @@ export default function IncompleteJourney({
                   newAnswers[idx] = e.target.value;
                   setAnswers(newAnswers);
                 }}
-                className={
-                  "inline h-6 w-40 max-w-fit rounded-full border-b-2 border-sky-400 px-3 " +
-                  (border[idx] !== "" ? border[idx] : " bg-opacity-70")
-                }
+                className={cn(
+                  "inline h-8 w-32 rounded-lg px-3 text-center text-sm text-black transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-sky-500 sm:w-40",
+                  !gameStart &&
+                    "cursor-not-allowed border border-slate-700/50 bg-slate-800/50 text-slate-500 placeholder-slate-600",
+                  gameStart &&
+                    border[idx] === "" &&
+                    "border border-slate-600 bg-slate-900 text-white placeholder-slate-500 hover:border-sky-400/50",
+                  border[idx] !== "" && border[idx],
+                )}
               />
               {feedback[idx] === "Correct" && (
-                <CorrectFeedback scores={scores[idx]} />
+                <span className="absolute -top-6 left-1/2 -translate-x-1/2">
+                  <CorrectFeedback scores={scores[idx]} />
+                </span>
               )}
               {feedback[idx] === "Incorrect" && (
-                <IncorrectFeedback scores={scores[idx]} />
+                <span className="absolute -top-6 left-1/2 -translate-x-1/2">
+                  <IncorrectFeedback scores={scores[idx]} />
+                </span>
               )}
             </span>
           </React.Fragment>
         );
       } else {
         return (
-          <span className="" key={idx}>
+          <span className="leading-loose text-slate-300" key={idx}>
             {part}
           </span>
         );
@@ -73,26 +96,57 @@ export default function IncompleteJourney({
   ]);
 
   return (
-    <div className="border-primary mx-auto max-w-[80dvw] rounded-lg border p-4 md:max-w-[60dvw]">
-      <div className="flex items-center justify-between">
-        <div className="flex flex-col justify-center gap-1">
+    <div className="flex flex-col gap-6">
+      <div className="flex flex-col items-center justify-between gap-4 border-b border-slate-800/50 pb-6 sm:flex-row">
+        <div className="flex flex-col justify-center gap-1 text-center sm:text-left">
           <JourneyTitle title={title} />
-          <p>Fill the missing blank down below</p>
+          <p className="text-sm text-slate-400">
+            Read carefully and fill in the missing blanks below
+          </p>
         </div>
-        <button
-          onClick={onClickStart}
-          className="border-primary h-12 w-32 rounded-xl border hover:shadow hover:shadow-sky-400"
-        >
-          Start
-        </button>
+        {!gameStart && (
+          <button
+            onClick={onClickStart}
+            className="group flex h-12 items-center gap-2 rounded-xl bg-sky-500 px-6 font-bold text-white shadow-lg shadow-sky-500/20 transition-all duration-300 hover:-translate-y-1 hover:bg-sky-400 hover:shadow-sky-400/40 active:scale-95"
+          >
+            <FiPlay className="size-5 transition-transform group-hover:scale-110" />
+            <span>Start Journey</span>
+          </button>
+        )}
       </div>
-      <div className="border-primary mt-4 rounded-lg border">
-        <p className="p-4 text-justify indent-10 leading-loose tracking-tight">
+
+      <div className="relative overflow-hidden rounded-2xl border border-slate-700/50 bg-slate-900/50 shadow-inner">
+        {/* Story Content */}
+        <div className="p-6 text-justify indent-8 text-base leading-loose tracking-wide sm:p-8 sm:indent-12 sm:text-lg">
           {questions}
-        </p>
-        <div className="bg-primary flex w-full justify-between">
-          <p className="px-4 py-2 font-bold text-white">Score: {finalScore}</p>
-          <p className="px-4 py-2 font-bold text-white">Time: {timer}</p>
+        </div>
+
+        {/* Game Stats Footer */}
+        <div className="flex w-full items-center justify-between border-t border-slate-800/80 bg-slate-950/80 px-6 py-4 backdrop-blur-md">
+          <div className="flex items-center gap-3">
+            <span className="text-xs font-bold uppercase tracking-widest text-slate-500">
+              Score
+            </span>
+            <div className="flex h-8 items-center justify-center rounded-lg border border-sky-500/20 bg-sky-500/10 px-3">
+              <span className="font-bold text-sky-400">{finalScore}</span>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <span className="text-xs font-bold uppercase tracking-widest text-slate-500">
+              Time Left
+            </span>
+            <div
+              className={cn(
+                "flex h-8 items-center justify-center rounded-lg border px-3 font-bold transition-colors",
+                timer.startsWith("00:0") && parseInt(timer.split(":")[1]) < 10
+                  ? "animate-pulse border-rose-500/30 bg-rose-500/10 text-rose-400"
+                  : "border-slate-700 bg-slate-800 text-white",
+              )}
+            >
+              {timer}
+            </div>
+          </div>
         </div>
       </div>
     </div>

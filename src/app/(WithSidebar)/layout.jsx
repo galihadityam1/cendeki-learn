@@ -7,7 +7,7 @@ import HeroFooter from "@/components/HeroFooter";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "Cendeki App | Interactive Learning Platform",
+  title: "Cendekia | Interactive Learning Platform",
   description: "Interactive Learning Platform",
 };
 
@@ -17,24 +17,30 @@ export default function RootLayout({ children }) {
     if (!data) {
       return (
         <html lang="en">
-          <body className={inter.className}>
+          <body
+            className={`${inter.className} min-h-screen bg-slate-950 text-slate-100`}
+          >
             <Navbar />
-            <div className="flex min-h-dvh">{children}</div>
-            <HeroFooter />
+            <div className="flex min-h-screen flex-col">
+              <main className="flex-1">{children}</main>
+              <HeroFooter />
+            </div>
           </body>
         </html>
       );
-    } else {
     }
+
     let token = data.value.split(" ")[1];
     if (token) {
       return (
         <html lang="en">
-          <body className={inter.className}>
-            <div className="flex min-h-dvh">
+          <body
+            className={`${inter.className} min-h-screen bg-slate-950 text-slate-100`}
+          >
+            <div className="flex min-h-screen">
               <AppWrapper>
                 <Sidebar />
-                {children}
+                <main className="w-full flex-1">{children}</main>
               </AppWrapper>
             </div>
           </body>

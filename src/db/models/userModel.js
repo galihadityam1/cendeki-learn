@@ -5,12 +5,12 @@ import { hashPassword, verifyPassword } from "../helpers/bcrypt";
 import { ObjectId } from "mongodb";
 
 const AddUserSchema = z.object({
-  fullname: z.string(),
+  fullname: z.string().min(2),
   email: z.string().email(),
   password: z.string().min(5),
   age: z.number(),
+  bio: z.string().optional(),
 });
-
 
 const LoginUserSchema = z.object({
   email: z.string().email(),
@@ -18,21 +18,24 @@ const LoginUserSchema = z.object({
 });
 
 export class UserModel {
-  static collection() {
-    return getCollection("users");
+  static async collection() {
+    return await getCollection("users");
   }
 
   static async getAllUser() {
-    return this.collection().find().toArray();
+    const collection = await this.collection();
+    return collection.find().toArray();
   }
 
   static async getUser(_id) {
-    const user = await this.collection().findOne({ _id });
+    const collection = await this.collection();
+    const user = await collection.findOne({ _id });
     return user;
   }
 
   static async checkUserEmail(email) {
-    const checkEmail = await this.collection().findOne({ email });
+    const collection = await this.collection();
+    const checkEmail = await collection.findOne({ email });
     return checkEmail;
   }
 
@@ -41,8 +44,9 @@ export class UserModel {
     if (!validation.success) {
       throw validation.error;
     }
-    
-    const result = await this.collection().insertOne({
+
+    const collection = await this.collection();
+    const result = await collection.insertOne({
       ...user,
       password: hashPassword(user.password),
     });
@@ -132,54 +136,50 @@ export class UserModel {
       {
         $addFields: {
           highestScore: {
-            $max: "$historyId.score" // Calculate the maximum score from historyId array
-          }
-        }
+            $max: "$historyId.score", // Calculate the maximum score from historyId array
+          },
+        },
       },
       {
         $addFields: {
-          totalScore: { $sum: "$history.score" } // Calculate the total score
-        }
-      }
-
+          totalScore: { $sum: "$history.score" }, // Calculate the total score
+        },
+      },
     ];
-    const cursor = this.collection().aggregate(agg);
+    const collection = await this.collection();
+    const cursor = collection.aggregate(agg);
     const result = await cursor.toArray();
     return result[0];
   }
 
-  static async updateProfile({ idUser, fullname, bio }) {
+  static async updateProfile({ idUser, fullname, bio, age }) {
+    const collection = await this.collection();
     const id = new ObjectId(String(idUser));
-    if(!fullname){
-      const res = await this.collection().updateOne(
-        { _id: id },
-        { $set: { bio: bio } },
-      );
-      return res;
-    }
+    const updateData = {};
 
-    if(!bio){
-      const res = await this.collection().updateOne(
-        { _id: id },
-        { $set: { fullname } },
-      );
-      return res;
-    }
+    if (fullname) updateData.fullname = fullname;
+    if (bio) updateData.bio = bio;
+    if (age) updateData.age = age;
 
-    if(bio && fullname){
-      const res = await this.collection().updateOne(
-        { _id: id },
-        { $set: { fullname: fullname, bio: bio } },
-      );
-      return res;
-    }
+    const res = await collection.updateOne({ _id: id }, { $set: updateData });
+    return res;
   }
 
   static async googleLogin(data) {
-    const user = await this.collection().findOne({ email: data.email })
+    const collection = await this.collection();
+    const user = await collection.findOne({ email: data.email });
+
     if (!user) {
-      return await this.addUser(data)
+      const result = await collection.insertOne({
+        ...data,
+        password: hashPassword(data.password),
+      });
+      return {
+        _id: result.insertedId,
+        ...data,
+      };
     }
-    return user
+
+    return user;
   }
 }
