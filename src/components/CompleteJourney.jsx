@@ -14,7 +14,18 @@ export default function CompleteJourney({
   const questions = useMemo(() => {
     if (!journey) return [];
 
-    const parts = journey.split(/___\d+___/);
+    // Handle both formats: ___1___ and ----
+    const hasNumberedBlanks = /___\d+___/.test(journey);
+
+    let parts;
+
+    if (hasNumberedBlanks) {
+      // Format: ___1___, ___2___, etc.
+      parts = journey.split(/___\d+___/);
+    } else {
+      // Format: ---- (multiple dashes)
+      parts = journey.split(/----+/);
+    }
 
     return parts.map((part, idx) => {
       if (idx < correctAnswers.length) {

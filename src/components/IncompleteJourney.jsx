@@ -21,8 +21,20 @@ export default function IncompleteJourney({
   const questions = useMemo(() => {
     if (!journey) return [];
 
-    const parts = journey.split(/___\d+___/);
-    const blanks = journey.match(/___\d+___/g) || [];
+    // Handle both formats: ___1___ and ----
+    const hasNumberedBlanks = /___\d+___/.test(journey);
+
+    let parts, blanks;
+
+    if (hasNumberedBlanks) {
+      // Format: ___1___, ___2___, etc.
+      parts = journey.split(/___\d+___/);
+      blanks = journey.match(/___\d+___/g) || [];
+    } else {
+      // Format: ---- (multiple dashes)
+      parts = journey.split(/----+/);
+      blanks = journey.match(/----+/g) || [];
+    }
 
     return parts.map((part, idx) => {
       if (idx < blanks.length) {
