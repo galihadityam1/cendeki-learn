@@ -38,7 +38,7 @@ export default function Page({ params }) {
   const [finalScore, setFinalScore] = useState(0);
   const [gameEnd, setGameEnd] = useState(false);
   const [timer, setTimer] = useState("00:30");
-const [title, setTitle] = useState("");
+  const [title, setTitle] = useState("");
 
   const onClickStart = () => {
     clearTimer(getTimeUp(), setTimer, setGameEnd, Ref);

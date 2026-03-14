@@ -8,7 +8,6 @@ import CompleteJourney from "@/components/CompleteJourney";
 import IncompleteJourney from "@/components/IncompleteJourney";
 import LoadingSkeleton from "@/components/LoadingSkeleton";
 import { capitalize, clearTimer, getTimeUp, postScore } from "../actions";
-import { OPENROUTER_API_KEY } from "@/db/config/constant";
 import { SparklesCore } from "@/components/ui/sparkles";
 import { useAppContext } from "@/context";
 
