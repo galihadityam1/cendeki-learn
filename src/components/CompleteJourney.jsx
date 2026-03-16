@@ -18,7 +18,6 @@ export default function CompleteJourney({
     const hasNumberedBlanks = /___\d+___/.test(journey);
 
     let parts;
-
     if (hasNumberedBlanks) {
       // Format: ___1___, ___2___, etc.
       parts = journey.split(/___\d+___/);
