@@ -5,6 +5,7 @@ import GoogleProvider from "next-auth/providers/google";
 import { cookies } from "next/headers";
 
 const authOption = {
+  secret: process.env.NEXTAUTH_SECRET || process.env.JWT_SECRET,
   session: {
     strategy: "jwt",
   },
